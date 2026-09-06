@@ -15,7 +15,7 @@ try{
     assert.equal(await recordPicker.inputValue(),'32','切换语言应保留选中记录');
     assert.equal(await page.locator('#module-panel input[type=number]').nth(1).inputValue(),'123');
     const suffix={'zh-CN':'cn','en-US':'en','ja-JP':'ja'}[language];
-    const descriptions=await readFile(new URL('../UnicornOverlord/info/skilldesc-'+suffix+'.txt',import.meta.url),'utf8');
+    const descriptions=await readFile(new URL('./info/skilldesc-'+suffix+'.txt',import.meta.url),'utf8');
     const expected=Buffer.from(descriptions.split(/\r?\n/).find(line=>line.startsWith('32\t')).split('\t')[1],'base64').toString('utf8');
     assert.equal(await page.locator('#module-panel p[data-no-translate]').textContent(),expected,'游戏说明必须保持对应语种原文');
   }

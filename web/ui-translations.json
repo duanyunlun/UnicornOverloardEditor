@@ -1,4 +1,13 @@
 [
+ ["桌面工程格式或目标版本无效","Invalid desktop project or game version","デスクトップ工程またはゲームバージョンが無効です"],
+ ["桌面工程模块无效或重复","Invalid or duplicate desktop module","デスクトップモジュールが無効または重複しています"],
+ ["桌面任务工程无效","Invalid desktop mission project","デスクトップの任務工程が無効です"],
+ ["桌面工程记录无效","Invalid desktop project records","デスクトップ工程のレコードが無効です"],
+ ["桌面工程含尚未支持的模块","Desktop project contains an unsupported module","デスクトップ工程に未対応のモジュールがあります"],
+ ["添加道具","Add Items","アイテムを追加"],
+ ["筛选待添加物品 / ID","Filter items to add / ID","追加するアイテムを検索 / ID"],
+ ["请选择至少一个物品","Select at least one item","アイテムを1つ以上選択してください"],
+ ["角色计数越界","Character count out of range","キャラクター数が範囲外です"],
  ["导入 / 独立导出","Import / Standalone Export","インポート / 個別エクスポート"],
  ["默认装备规则","Default Gear Rules","既定装備の規則"],
  ["选择原始 main","Select Original main","元の main を選択"],

@@ -46,12 +46,36 @@ try{
   assert.deepEqual(JSON.parse(await readFile(new URL('roundtrip-result.json',output),'utf8')).missionEdits.equiptype_items,project.missionEdits.equiptype_items);
   const combinedDownload=page.waitForEvent('download');await page.locator('#export').click();await (await combinedDownload).saveAs(new URL('combined.zip',output).pathname);
   await page.getByText('已导出 3 个模块，字节冲突检查通过',{exact:true}).waitFor();
+  const desktopProject={schemaVersion:1,target:{Key:'asia',TitleId:'010054B01AD92000',BuildId:'9C3116F0333EA157526612D17354B3755737C4F2'},modules:[{Key:'fort_editor',records:[{RecordId:1,ClassId:7}]},{Key:'battle_preview',mode:1},{Key:'class_editor',records:[],class_tactics:[],equiptype_items:project.missionEdits.equiptype_items},{Key:'mission_editor',edits:{unitsets:[]}}]};
+  const desktopChooser=page.waitForEvent('filechooser');await page.locator('#import-project').click();await (await desktopChooser).setFiles({name:'mod-project.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(desktopProject))});
+  await page.getByText('完整工程已载入',{exact:true}).waitFor();
+  const migratedDownload=page.waitForEvent('download');await page.locator('#save-project').click();await (await migratedDownload).saveAs(new URL('migrated-project.json',output).pathname);
+  const migrated=JSON.parse(await readFile(new URL('migrated-project.json',output),'utf8'));assert.equal(migrated.target,'asia');assert.equal(migrated.modules.fort_editor.records[0].classId,7);assert.equal(migrated.modules.battle_preview.mode,'imperfect');assert.deepEqual(migrated.missionEdits.equiptype_items,desktopProject.modules[2].equiptype_items);
+  const migratedMod=page.waitForEvent('download');await page.locator('#export').click();await (await migratedMod).saveAs(new URL('migrated-mod.zip',output).pathname);await page.getByText('已导出 3 个模块，字节冲突检查通过',{exact:true}).waitFor();
   const fixture=new Uint8Array(0x4da3a0);fixture.set(new TextEncoder().encode('UCSD'),4);fixture.fill(255,0x2af40,0x2af40+500*464);fixture.fill(255,0x1b5830,0x1b5830+164*1316);
   await writeFile(new URL('fixture.DAT',output),fixture);await page.locator('#show-save').click();
   const saveChooser=page.waitForEvent('filechooser');await page.getByRole('button',{name:'打开存档',exact:true}).click();await (await saveChooser).setFiles(new URL('fixture.DAT',output).pathname);
   await page.getByLabel('金币',{exact:true}).fill('123456');await page.getByLabel('声望',{exact:true}).click();
+  await page.getByRole('button',{name:'角色',exact:true}).click();
+  const character=Buffer.alloc(464);character[40]=3;character.writeUInt16LE(1,60);
+  const characterChooser=page.waitForEvent('filechooser');await page.getByRole('button',{name:'从文件新增角色',exact:true}).click();
+  const batchChooser=await characterChooser;assert.equal(batchChooser.isMultiple(),true);await batchChooser.setFiles([{name:'first.uocd',mimeType:'application/octet-stream',buffer:character},{name:'second.uocd',mimeType:'application/octet-stream',buffer:character}]);
+  await page.getByLabel('选择存档角色',{exact:true}).locator('option').nth(1).waitFor({state:'attached'});
+  for(const [section,summary,ids] of [['道具','添加道具',['8','9']],['装备','添加装备',['282','283']]]){
+    await page.getByRole('button',{name:section,exact:true}).click();await page.locator('summary').filter({hasText:new RegExp('^'+summary+'$')}).click();
+    const picker=page.getByLabel('添加物品',{exact:true});await picker.selectOption(ids);
+    await page.getByLabel('筛选待添加物品 / ID',{exact:true}).fill(ids[0]);await page.getByRole('button',{name:'添加所选',exact:true}).click();
+    assert.equal(await page.locator('.table-scroll tr').count(),2,'过滤后仍应添加所有已选条目');
+  }
+  await page.screenshot({path:new URL('save-equipment.png',output).pathname,fullPage:true});
+  await page.getByRole('button',{name:'部队',exact:true}).click();await page.getByLabel('人数上限',{exact:true}).first().fill('6');await page.getByLabel('启用部队',{exact:true}).first().check();
   const saveDownload=page.waitForEvent('download');await page.getByRole('button',{name:'下载修改后存档',exact:true}).click();await (await saveDownload).saveAs(new URL('edited.DAT',output).pathname);
-  assert.equal((await readFile(new URL('edited.DAT',output))).readUInt32LE(0x20),123456);
+  const editedSave=await readFile(new URL('edited.DAT',output));assert.equal(editedSave.readUInt32LE(0x20),123456);
+  assert.equal(editedSave.readUInt32LE(0x63984),2);assert.equal(editedSave.readUInt32LE(0x2af40),1);assert.equal(editedSave.readUInt32LE(0x2af40+464),2);
+  assert.deepEqual(Array.from({length:4},(_,index)=>editedSave.readUInt32LE(0xa0+index*20)),[8,9,282,283]);
+  assert.equal(editedSave[0xa0+2*20+8],0);assert.equal(editedSave[0x10d89a],6);assert.equal(editedSave[0x10d89a+1670],1);
+  const backupDownload=page.waitForEvent('download');await page.getByRole('button',{name:'下载原始备份',exact:true}).click();await (await backupDownload).saveAs(new URL('backup.DAT',output).pathname);
+  assert.deepEqual(await readFile(new URL('backup.DAT',output)),Buffer.from(fixture));
   assert.equal((await readFile(new URL('fixture.DAT',output))).readUInt32LE(0x20),0);
   await page.locator('#show-mod').click();
   await page.setViewportSize({width:390,height:844});await page.screenshot({path:new URL('mobile.png',output).pathname,fullPage:true});

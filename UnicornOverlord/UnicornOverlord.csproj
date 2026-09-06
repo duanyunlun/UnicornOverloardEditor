@@ -21,9 +21,9 @@
   <ItemGroup>
     <AvaloniaResource Include="Assets/AppIcon.png" />
     <Content Include="Assets/AppIcon.icns" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="info/**/*" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="mods/**/*" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="locales/*.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../web/info/**/*" Link="info/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../web/mods/**/*" Link="mods/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../web/locales/*.json" Link="locales/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="../docs/第三方MOD来源.md" Link="THIRD_PARTY_MODS.md" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 

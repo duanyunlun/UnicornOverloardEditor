@@ -1,5 +1,6 @@
 import {TARGETS,rows,generateMod,validateConflicts,zipFiles} from './mod-engine.js';
 import {mountSave,download} from './save.js';
+import {migrateDesktopProject} from './project.js';
 import {isAsiaRuntime,validateAsiaSource,buildAsiaMain} from './asia-runtime.js';
 import {configureTranslations,setLanguage,getLanguage,t,translateDom,localizedName} from './i18n.js';
 const $=id=>document.getElementById(id);
@@ -97,7 +98,7 @@ $('show-save').onclick=()=>{$('save-workspace').hidden=false;$('mod-workspace').
 $('show-mod').onclick=()=>{$('save-workspace').hidden=true;$('mod-workspace').hidden=false;$('show-save').className='';$('show-mod').className='active';$('mod-toolbar').querySelector('.actions').hidden=false;$('mod-toolbar').querySelector('strong').textContent=t('MOD 工程');};
 $('save-project').onclick=async()=>{try{if(missionFrame)project.missionEdits=(await requestFrame('uo-request-edits')).edits;download('unicorn-mod-project.json',JSON.stringify(project,null,2));notify('完整工程已保存，包含任务、预设、职业默认战术与装备');}catch(error){notify(error.message,true);}};
 $('import-project').onclick=()=>{const input=document.createElement('input');input.type='file';input.accept='.json';input.onchange=async()=>{try{
-  const file=input.files[0];if(!file)return;if(file.size>16*1024*1024)throw Error('工程超过16 MiB');const candidate=JSON.parse(await file.text());
+  const file=input.files[0];if(!file)return;if(file.size>16*1024*1024)throw Error('工程超过16 MiB');const candidate=migrateDesktopProject(JSON.parse(await file.text()));
   if(candidate.schema!==1||!TARGETS[candidate.target]||!candidate.modules||Array.isArray(candidate.modules))throw Error('不是本网站的MOD工程；上游工程请在任务编辑器中载入');
   for(const [key,value] of Object.entries(candidate.modules)){if(!definitions.some(row=>row[1]===key)||missionKeys.has(key)||!value||typeof value.enabled!=='boolean')throw Error('工程模块无效');if(value.enabled||value.records?.length)generateMod(key,value,candidate.target,catalog);}
   if(!confirm(t('载入工程会替换当前所有MOD修改，继续？')))return;

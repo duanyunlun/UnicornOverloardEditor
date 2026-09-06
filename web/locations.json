@@ -1,0 +1,410 @@
+[
+  {
+    "english": "Fort Soligie",
+    "name": "索力吉堡垒",
+    "start": 1,
+    "count": 3
+  },
+  {
+    "english": "Fort Thessalon",
+    "name": "泰泽隆堡垒",
+    "start": 4,
+    "count": 3
+  },
+  {
+    "english": "Fort Chandelis",
+    "name": "香杜里堡垒",
+    "start": 7,
+    "count": 3
+  },
+  {
+    "english": "Fort Mainteneaut",
+    "name": "曼图诺堡垒",
+    "start": 10,
+    "count": 3
+  },
+  {
+    "english": "Fort Rimitz",
+    "name": "利米茨堡垒",
+    "start": 13,
+    "count": 3
+  },
+  {
+    "english": "Fort Groux",
+    "name": "格鲁堡垒",
+    "start": 16,
+    "count": 3
+  },
+  {
+    "english": "Fort Paradis",
+    "name": "帕拉迪斯堡垒",
+    "start": 19,
+    "count": 3
+  },
+  {
+    "english": "Fort Veille",
+    "name": "威尔堡垒",
+    "start": 22,
+    "count": 3
+  },
+  {
+    "english": "Walled City of Barbatimo",
+    "name": "要塞都市巴巴奇莫",
+    "start": 25,
+    "count": 6
+  },
+  {
+    "english": "Fort Colmarre",
+    "name": "科尔马堡垒",
+    "start": 31,
+    "count": 3
+  },
+  {
+    "english": "Fort Gromond",
+    "name": "格罗蒙德堡垒",
+    "start": 34,
+    "count": 3
+  },
+  {
+    "english": "Fort Lonteria",
+    "name": "隆特利亚堡垒",
+    "start": 37,
+    "count": 4
+  },
+  {
+    "english": "Fort Zelkova",
+    "name": "泽尔库巴堡垒",
+    "start": 41,
+    "count": 3
+  },
+  {
+    "english": "Walled City of Eucuit",
+    "name": "要塞都市尤奎特",
+    "start": 44,
+    "count": 6
+  },
+  {
+    "english": "Fort Istania",
+    "name": "伊斯塔尼亚堡垒",
+    "start": 50,
+    "count": 3
+  },
+  {
+    "english": "Fort Longeraige",
+    "name": "隆格拉吉堡垒",
+    "start": 53,
+    "count": 3
+  },
+  {
+    "english": "Fort Cypla",
+    "name": "西普利堡垒",
+    "start": 56,
+    "count": 3
+  },
+  {
+    "english": "Fort Plaine",
+    "name": "普雷努堡垒",
+    "start": 59,
+    "count": 3
+  },
+  {
+    "english": "Fort Epine Morceaux",
+    "name": "埃匹摩尔松堡垒",
+    "start": 62,
+    "count": 3
+  },
+  {
+    "english": "Fort Herstann",
+    "name": "赫尔修坦堡垒",
+    "start": 65,
+    "count": 3
+  },
+  {
+    "english": "Bandit's Keep",
+    "name": "盗贼堡垒",
+    "start": 68,
+    "count": 4
+  },
+  {
+    "english": "Walled City of Adopti",
+    "name": "要塞都市亚德普提",
+    "start": 72,
+    "count": 6
+  },
+  {
+    "english": "Fort Neumont",
+    "name": "诺伊莫特堡垒",
+    "start": 78,
+    "count": 3
+  },
+  {
+    "english": "Baumratte",
+    "name": "鲍姆拉特斗技场",
+    "start": 81,
+    "count": 6
+  },
+  {
+    "english": "Fort Farzieg",
+    "name": "法吉格堡垒",
+    "start": 87,
+    "count": 3
+  },
+  {
+    "english": "Fort Hossent",
+    "name": "霍赞特堡垒",
+    "start": 90,
+    "count": 3
+  },
+  {
+    "english": "Fort Asterweiss",
+    "name": "亚斯特维兹堡垒",
+    "start": 93,
+    "count": 3
+  },
+  {
+    "english": "Pritzlasse Fortress",
+    "name": "普里茨特拉泽要塞",
+    "start": 96,
+    "count": 3
+  },
+  {
+    "english": "Castle Soldraga",
+    "name": "索尔德拉迦城",
+    "start": 99,
+    "count": 6
+  },
+  {
+    "english": "Fort Schusse",
+    "name": "邱扎堡垒",
+    "start": 105,
+    "count": 3
+  },
+  {
+    "english": "Fort Pikkimp",
+    "name": "皮耶金普堡垒",
+    "start": 108,
+    "count": 3
+  },
+  {
+    "english": "Fort Joperse",
+    "name": "乔佩尔塞堡垒",
+    "start": 111,
+    "count": 3
+  },
+  {
+    "english": "Fort Mettza",
+    "name": "梅扎堡垒",
+    "start": 114,
+    "count": 3
+  },
+  {
+    "english": "Castle Laurhal",
+    "name": "劳尔哈尔城",
+    "start": 117,
+    "count": 6
+  },
+  {
+    "english": "Fort Kolkkea",
+    "name": "科尔凯亚堡垒",
+    "start": 123,
+    "count": 3
+  },
+  {
+    "english": "Fort Aras",
+    "name": "阿拉斯堡垒",
+    "start": 126,
+    "count": 3
+  },
+  {
+    "english": "Fort Payvakea",
+    "name": "派瓦凯亚堡垒",
+    "start": 129,
+    "count": 3
+  },
+  {
+    "english": "Voryatan Citadel",
+    "name": "要塞都市沃里坦",
+    "start": 132,
+    "count": 6
+  },
+  {
+    "english": "Fort Korim",
+    "name": "科尔梅堡垒",
+    "start": 138,
+    "count": 3
+  },
+  {
+    "english": "Fort Kolmerengas",
+    "name": "科尔梅雷佳斯堡垒",
+    "start": 141,
+    "count": 3
+  },
+  {
+    "english": "Fort Souill",
+    "name": "索伊尔堡垒",
+    "start": 144,
+    "count": 3
+  },
+  {
+    "english": "Palanspelt Palace",
+    "name": "地下宫殿帕兰希佩尔特",
+    "start": 147,
+    "count": 6
+  },
+  {
+    "english": "Ancient City of Bastoritza",
+    "name": "古都巴斯塔利札",
+    "start": 153,
+    "count": 6
+  },
+  {
+    "english": "Fort Perzmost",
+    "name": "佩里斯莫斯特堡垒",
+    "start": 159,
+    "count": 4
+  },
+  {
+    "english": "Fort Sedorosha",
+    "name": "塞多罗夏堡垒",
+    "start": 163,
+    "count": 4
+  },
+  {
+    "english": "Fort Kannadeo",
+    "name": "康纳迪欧堡垒",
+    "start": 167,
+    "count": 4
+  },
+  {
+    "english": "Fort Kharodetz",
+    "name": "卡洛杰茨堡垒",
+    "start": 171,
+    "count": 4
+  },
+  {
+    "english": "Fort Servel",
+    "name": "赛培尔堡垒",
+    "start": 175,
+    "count": 4
+  },
+  {
+    "english": "Dracodorina Citadel",
+    "name": "要塞都市德拉科多利纳",
+    "start": 179,
+    "count": 6
+  },
+  {
+    "english": "Fort Garava",
+    "name": "加拉瓦堡垒",
+    "start": 185,
+    "count": 4
+  },
+  {
+    "english": "Fort Sebatshet",
+    "name": "瑟巴托谢特堡垒",
+    "start": 189,
+    "count": 4
+  },
+  {
+    "english": "Fortified City of Solvaquad",
+    "name": "要塞都市索尔巴库夸多",
+    "start": 193,
+    "count": 6
+  },
+  {
+    "english": "Fort Veterana",
+    "name": "贝特拉纳堡垒",
+    "start": 199,
+    "count": 4
+  },
+  {
+    "english": "Fort Terrarosa",
+    "name": "特拉罗沙堡垒",
+    "start": 203,
+    "count": 4
+  },
+  {
+    "english": "Largion Citadel",
+    "name": "要塞都市拉简",
+    "start": 207,
+    "count": 6
+  },
+  {
+    "english": "Fort Viridian Hill",
+    "name": "比里疆希尔堡垒",
+    "start": 213,
+    "count": 4
+  },
+  {
+    "english": "Fort Foxwell",
+    "name": "福克斯维尔堡垒",
+    "start": 217,
+    "count": 4
+  },
+  {
+    "english": "Fort Autumnhill",
+    "name": "奥特姆希尔堡垒",
+    "start": 221,
+    "count": 4
+  },
+  {
+    "english": "Fort Kingsrock",
+    "name": "金斯洛克堡垒",
+    "start": 225,
+    "count": 4
+  },
+  {
+    "english": "Walled City of Peyston",
+    "name": "要塞都市佩兹顿",
+    "start": 229,
+    "count": 6
+  },
+  {
+    "english": "Bisfaine Basilica",
+    "name": "比斯法因大教堂",
+    "start": 235,
+    "count": 6
+  },
+  {
+    "english": "Fort Greyhill",
+    "name": "格雷希尔堡垒",
+    "start": 241,
+    "count": 4
+  },
+  {
+    "english": "Fort Worchester",
+    "name": "沃切斯塔堡垒",
+    "start": 245,
+    "count": 4
+  },
+  {
+    "english": "Cornia Quarry",
+    "name": "科尔尼亚采掘场",
+    "start": 0,
+    "count": 11
+  },
+  {
+    "english": "Drakenhold Quarry",
+    "name": "德拉肯加德采掘场",
+    "start": 11,
+    "count": 11
+  },
+  {
+    "english": "Elheim Quarry",
+    "name": "艾尔海姆采掘场",
+    "start": 22,
+    "count": 11
+  },
+  {
+    "english": "Bastorias Quarry",
+    "name": "巴斯特利亚斯采掘场",
+    "start": 33,
+    "count": 12
+  },
+  {
+    "english": "Albion Quarry",
+    "name": "阿尔比昂采掘场",
+    "start": 45,
+    "count": 18
+  }
+]

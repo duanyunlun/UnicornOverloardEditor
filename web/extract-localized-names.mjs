@@ -1,6 +1,6 @@
 import {readFileSync,writeFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-const doc=JSON.parse(gunzipSync(readFileSync('UnicornOverlord/info/mission_catalog.json.gz')));
+const doc=JSON.parse(gunzipSync(readFileSync('web/info/mission_catalog.json.gz')));
 function strings(path){const data=readFileSync(path);if(data.toString('ascii',0,4)!=='FMSB')throw Error('无效FMS');const count=data.readUInt32LE(20);return data.subarray(32+count*8).toString('utf8').split('\0').slice(0,count);}
 const chinese=strings('.extracted/cpk-cn/MsgSheet/UcQuestList.fms');
 const japanese=strings('.tools/i18n-source/MsgSheet/UcQuestList.fms');

@@ -1,133 +1,59 @@
-<a id="chinese"></a>
-
-[中文](#chinese) | [English](#english)
-
-![下载量 / Downloads](https://img.shields.io/github/downloads/duanyunlun/UnicornOverloardEditor/total.svg)
-
 # UnicornOverloardEditor
 
-《独角兽之王》存档与 MOD 编辑器
+《独角兽之王》存档与 MOD 浏览器编辑器，支持简体中文、English、日本語。
 
-基于 Avalonia 的跨平台 Nintendo Switch 存档与 MOD 编辑器。界面支持简体中文、English 和日本語，默认使用简体中文。
+**[打开 Web 编辑器](https://duanyunlun.github.io/UnicornOverloardEditor/)**
 
-## 下载
-
-[从 GitHub Releases 下载最新版本](https://github.com/duanyunlun/UnicornOverloardEditor/releases/latest)。正式发行包提供以下三个自包含版本，无需另外安装 .NET：
-
-- Windows x64
-- macOS Intel x64
-- macOS Apple Silicon arm64
-
-macOS 应用当前使用 ad-hoc 签名，未经过 Apple 公证。
+从当前版本起，开发与发布全面转向 Web，不再发布 Windows/macOS 桌面 App。旧 Avalonia 源码仅保留作历史参考；公共名称、译文、原始表和补丁模板已移入 `web/`，Web 构建不需要 .NET。
 
 ## 功能
 
-- 修改金币、名望和泽诺伊拉难度
-- 查看及修改角色职业、等级、能力加成与亲密度
-- 修改物品数量，批量补齐安全消耗道具和缺少的装备
-- 使用 Shift 多选并一次添加多种物品或装备
-- 导出角色、用 `.uocd` 替换角色或从 `.uocd` 新增角色
-- 修改十个编队槽位
-- 打开存档时自动在存档旁的 `backup` 目录创建备份
-- 为亚洲中文版 v1.0.5 与欧美版 v1.05 导出 Astris 等模拟器使用的 MOD ZIP
-- 编辑技能、战斗预览/计时器、开战被动限制、角色加入随机化、职业成长与技能、据点雇佣、采矿、商店、六人编队和类型克制
-- 使用本地化名称选择 441 个技能、73 个职业和物品，切换条目时载入亚洲版原始值
+- 存档：金币、声望、难度、角色职业/等级/经验/能力/亲密度、十支部队。
+- 角色：导出、替换，以及一次导入多个 `.uocd`；批量输入先整体验证，失败不部分写入。
+- 库存：筛选并多选添加道具/装备、补齐、替换、批量数量。
+- MOD：技能、战斗、角色、职业、据点、采矿、商店、编队，保留原有分类。
+- 任务成员与装备、战术预设、职业默认战术和默认装备；工程 JSON 往返、上游 JSON/ZIP 导入、pchtxt 预览与统一冲突检查。
+- 亚洲中文版及欧美版 v1.0.5；亚洲经验倍率和动态等级需自行选择合法提取的原始未压缩 `main`，由浏览器本地合包。
+- 文本/CPK 编辑仍按此前要求暂缓，不计入已迁移功能；具体核对见[Web 迁移验收清单](docs/Web迁移验收清单.md)。
 
-## 从源码构建
+## 数据安全
 
-支持 Windows、macOS 和 Linux，需要 [.NET 10 SDK](https://dotnet.microsoft.com/zh-cn/download/dotnet/10.0)。
+所有编辑在浏览器内存中完成，不上传游戏文件，也不覆盖源存档。打开存档后可下载原始备份，修改后下载副本；关闭网页前务必保存工程或存档。浏览器不会自动写入模拟器的存档/MOD目录。
 
-```bash
-dotnet build UnicornOverlord.slnx
-dotnet run --project UnicornOverlord/UnicornOverlord.csproj
+MOD ZIP 面向 Astris 等模拟器，安装前停止游戏，禁用冲突旧 MOD，安装后冷启动。亚洲运行时输出含游戏程序，不得公开分发。静态检查不等同于所有游戏场景验证通过，具体实测边界见[亚洲版验证记录](docs/亚洲版经验与等级补丁验证.md)。
+
+## 开发与发布
+
+需要 Node.js 24 和 npm，在仓库根目录运行：
+
+```sh
+npm ci --prefix web/mission
+npm test --prefix web
+npm run build --prefix web/mission
+npm run build --prefix web
+python3 -m http.server 8766 --bind 127.0.0.1 --directory web/dist
 ```
 
-编辑前请先从模拟器或主机导出存档。编辑完成后，将保存的副本导回对应的存档位置。
+打开 `http://127.0.0.1:8766/`。不要通过 `file://` 双击网页。main 的 Web 相关更新自动部署 GitHub Pages；手动 Release 只生成 Web 静态 ZIP，不再构建桌面安装包。详见[构建与部署](docs/浏览器版构建与部署.md)。
 
-MOD 工作区当前生成模拟器使用的 `pchtxt` 包，可选择亚洲中文版 v1.0.5 或欧美版 v1.05；Title ID 与 Build ID 随目标版本写入。导出的 ZIP 内含中文安装说明；该格式不能直接用于 Atmosphere 实机。
+## 来源
 
-## 数据与安全
-
-项目内置物品、装备、职业和角色名称映射。职业与角色的简体中文名称由 v1.0.5 中文资源验证，物品与装备类型映射来自原项目公开发行数据。
-
-开发和逆向验证过程中使用的 ROM、存档、Keys、提取工具及中间文件均被排除在版本控制之外。详细说明见[开发与验证说明](docs/开发与验证.md)。
-
-## 相关链接
-
-- [游戏官网](https://unicorn-overlord.com/)
-- [原项目](https://github.com/turtle-insect/UnicornOverlord)
-- [存档研究讨论](https://gbatemp.net/threads/unicorn-overlord-save-editing.650584/)
-- [数据表](https://docs.google.com/spreadsheets/d/1UXe4nEloKlv14P4H4cOKeJc8R2P1fZW_HaLAuQG96BQ)
-- [Melisandre MOD 编辑器](https://melisand.re/)
-
-## 致谢
-
-- [pauljames80](https://gbatemp.net/members/pj1980.378437/)
-- [GBAtemp 社区](https://gbatemp.net/)
+- [原始存档编辑项目](https://github.com/turtle-insect/UnicornOverlord)
+- [UOSquadEditor](https://github.com/thu1478/UOSquadEditor)
+- [第三方 MOD 来源与许可](docs/第三方MOD来源.md)
+- [MOD 功能对齐清单](docs/MOD功能对齐清单.md)
+- [开发与验证说明](docs/开发与验证.md)
 
 ---
 
-<a id="english"></a>
+## English
 
-[中文](#chinese) | [English](#english)
+**[Open the Web editor](https://duanyunlun.github.io/UnicornOverloardEditor/)**
 
-# UnicornOverloardEditor
+Unicorn Overlord save and MOD editor for modern browsers, with Simplified Chinese, English and Japanese interfaces. Development and releases now target Web only; the old Avalonia application is retained as historical source, not a maintained release target.
 
-Unicorn Overlord Save & MOD Editor
+Save editing includes character import/export (including multiple `.uocd` files), inventory multi-selection, Rapport and units. The original eight MOD categories include mission squads, presets, class defaults, default gear, project import/export and conflict detection. Text/CPK editing remains deferred under the earlier scope and is not claimed as migrated.
 
-A cross-platform Avalonia editor for Nintendo Switch save data and MOD packages. The interface supports Simplified Chinese, English, and Japanese, with Simplified Chinese selected by default.
+Files stay in browser memory. Download the original backup and edited copy; save changes before closing the page. The browser does not install files into your emulator. Asian runtime patches require your own unmodified, uncompressed v1.0.5 `main`; generated game code must not be redistributed. Stop the game before installing MODs and cold-start afterward.
 
-## Download
-
-[Download the latest version from GitHub Releases](https://github.com/duanyunlun/UnicornOverloardEditor/releases/latest). Official releases provide the following three self-contained packages and do not require a separate .NET installation:
-
-- Windows x64
-- macOS Intel x64
-- macOS Apple Silicon arm64
-
-The macOS applications are currently ad-hoc signed and are not notarized by Apple.
-
-## Features
-
-- Edit Gold, Renown, and Zenoiran difficulty
-- View and edit character classes, levels, stat bonuses, and Rapport
-- Edit item quantities and safely add missing consumables or equipment in bulk
-- Select multiple items or equipment with Shift and add them together
-- Export characters, replace a character with a `.uocd` file, or add characters from `.uocd` files
-- Edit all ten unit formation slots
-- Automatically create a backup in the save file's adjacent `backup` directory when opening a save
-- Export emulator MOD ZIP files for Asian Chinese v1.0.5 and Western v1.05
-- Edit skills, battle preview and timer behavior, character recruitment randomization, class growth and skills, fort recruitment, mining, shops, six-unit formations, and class type effectiveness
-- Select 441 skills, 73 classes, and items by localized name and load calibrated Asian-version defaults when switching records
-
-## Build from Source
-
-Windows, macOS, and Linux are supported. The [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) is required.
-
-```bash
-dotnet build UnicornOverlord.slnx
-dotnet run --project UnicornOverlord/UnicornOverlord.csproj
-```
-
-Export a save from your console or emulator before editing. After editing, import the saved copy back into the corresponding save location.
-
-The MOD workspace currently generates `pchtxt` packages for emulators such as Astris. Asian Chinese v1.0.5 and Western v1.05 are supported, and the selected Target Version controls the Title ID and Build ID written into the package. The exported ZIP includes Chinese installation instructions. This format cannot be used directly with Atmosphere on a console.
-
-## Data and Safety
-
-The repository includes mappings for item, equipment, class, and character names. Simplified Chinese class and character names were verified against the v1.0.5 Chinese game resources; item and equipment type mappings originate from the original project's public release data.
-
-ROMs, save files, keys, extraction tools, and intermediate files used during development and reverse-engineering validation are excluded from version control. See the [development and validation notes](docs/开发与验证.md) for details.
-
-## Related Links
-
-- [Official game website](https://unicorn-overlord.com/)
-- [Original project](https://github.com/turtle-insect/UnicornOverlord)
-- [Save-editing research thread](https://gbatemp.net/threads/unicorn-overlord-save-editing.650584/)
-- [Data spreadsheet](https://docs.google.com/spreadsheets/d/1UXe4nEloKlv14P4H4cOKeJc8R2P1fZW_HaLAuQG96BQ)
-- [Melisandre MOD Editor](https://melisand.re/)
-
-## Credits
-
-- [pauljames80](https://gbatemp.net/members/pj1980.378437/)
-- [GBAtemp community](https://gbatemp.net/)
+Build using the commands above (Node.js 24 required, no .NET). Serve `web/dist` over HTTP. GitHub Pages is the primary release; manual releases provide a static Web ZIP instead of desktop binaries.

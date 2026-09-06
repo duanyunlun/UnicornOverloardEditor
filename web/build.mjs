@@ -6,18 +6,17 @@ const root=dirname(fileURLToPath(import.meta.url));
 const destination=resolve(root,'dist');
 await rm(destination,{recursive:true,force:true});
 await mkdir(resolve(destination,'data'),{recursive:true});
-for(const name of ['index.html','app.js','style.css','save.js','mod-engine.js','i18n.js','asia-runtime.js']) await copyFile(resolve(root,name),resolve(destination,name));
+for(const name of ['index.html','app.js','style.css','save.js','project.js','mod-engine.js','i18n.js','asia-runtime.js']) await copyFile(resolve(root,name),resolve(destination,name));
 const catalog={info:{},templates:{},fortLocations:[]};
 catalog.asiaRuntime=JSON.parse(await readFile(resolve(root,'asia-runtime-data.json'),'utf8'));
 for(const [folder,extension,key] of [['info','.txt','info'],['mods','.pchtxt','templates']]) {
-  for(const name of await readdir(resolve(root,'../UnicornOverlord',folder))) if(name.endsWith(extension)) catalog[key][name]=await readFile(resolve(root,'../UnicornOverlord',folder,name),'utf8');
+  for(const name of await readdir(resolve(root,folder))) if(name.endsWith(extension)) catalog[key][name]=await readFile(resolve(root,folder,name),'utf8');
 }
-const source=await readFile(resolve(root,'../UnicornOverlord/Modding/ModCatalog.cs'),'utf8');
-for(const match of source.matchAll(/\("([^"]+)", "([^"]+)", (\d+), (\d+)\)/g)) catalog.fortLocations.push({english:match[1],name:match[2],start:Number(match[3]),count:Number(match[4])});
-catalog.locales={};for(const language of ['zh-CN','en-US','ja-JP'])catalog.locales[language]=JSON.parse(await readFile(resolve(root,'../UnicornOverlord/locales',language+'.json'),'utf8'));
+catalog.fortLocations=JSON.parse(await readFile(resolve(root,'locations.json'),'utf8'));
+catalog.locales={};for(const language of ['zh-CN','en-US','ja-JP'])catalog.locales[language]=JSON.parse(await readFile(resolve(root,'locales',language+'.json'),'utf8'));
 catalog.uiTranslations=JSON.parse(await readFile(resolve(root,'ui-translations.json'),'utf8'));
 const names=JSON.parse(await readFile(resolve(root,'game-names.json'),'utf8'));
-const mission=JSON.parse(gunzipSync(await readFile(resolve(root,'../UnicornOverlord/info/mission_catalog.json.gz'))));
+const mission=JSON.parse(gunzipSync(await readFile(resolve(root,'info/mission_catalog.json.gz'))));
 const table=filename=>new Map(catalog.info[filename].replace(/^\uFEFF/,'').split(/\r?\n/).filter(line=>/^\d+\t/.test(line)).map(line=>{const row=line.split('\t');return [Number(row[0]),[row[3],row[1],row[2]]];}));
 catalog.nameTranslations=[];
 const facilities=new Map(catalog.info['facility-ja.txt'].split(/\r?\n/).filter(line=>line&&!line.startsWith('#')).map(line=>line.split('\t')));
@@ -33,7 +32,7 @@ const equipTypes={SWORD:['剑','Sword','剣'],LANCE:['枪','Lance','槍'],AXE:['
 const tiers={DEFAULT:['默认','Default','既定'],ENEMY:['敌军','Enemy','敵軍'],NORMAL:['普通','Normal','通常'],POWER:['强化','Power','強化'],BOSS:['首领','Boss','ボス']};
 for(const entry of mission.equiptype_items){const split=entry.symbol.indexOf('_'),tier=tiers[entry.symbol.slice(0,split)],kind=equipTypes[entry.symbol.slice(split+1)];if(tier&&kind)catalog.nameTranslations.push({values:tier.map((name,index)=>name+' · '+kind[index]),aliases:[entry.symbol]});}
 await writeFile(resolve(destination,'data/catalog.json'),JSON.stringify(catalog));
-await copyFile(resolve(root,'../UnicornOverlord/info/mission_catalog.json.gz'),resolve(destination,'data/mission_catalog.json.gz'));
+await copyFile(resolve(root,'info/mission_catalog.json.gz'),resolve(destination,'data/mission_catalog.json.gz'));
 await copyFile(resolve(root,'../docs/第三方MOD来源.md'),resolve(destination,'THIRD_PARTY_MODS.txt'));
 await cp(resolve(root,'mission/dist'),resolve(destination,'mission'),{recursive:true});
 await copyFile(resolve(root,'mission/LICENSE'),resolve(destination,'mission/LICENSE.txt'));

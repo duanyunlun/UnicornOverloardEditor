@@ -197,7 +197,7 @@ test("父层补丁导出/工程恢复保留预设名称、临时引用与修改"
 });
 
 test("精简原版目录可重建预览，全部职业和预设可独立导出", () => {
-  const data = JSON.parse(gunzipSync(readFileSync(new URL("../../../UnicornOverlord/info/mission_catalog.json.gz", import.meta.url))));
+  const data = JSON.parse(gunzipSync(readFileSync(new URL("../../info/mission_catalog.json.gz", import.meta.url))));
   assert.ok(data.item_skills.length > 0);
   const skills = new Map(data.skills.map(row => [row.id, row]));
   const items = new Map(data.item_skills.map(row => [row.id, row]));
