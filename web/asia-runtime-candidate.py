@@ -1,5 +1,6 @@
 import argparse
 import hashlib
+import json
 import runpy
 import struct
 import subprocess
@@ -246,12 +247,28 @@ def main():
     parser.add_argument("--xp", type=float, choices=MULTIPLIERS)
     parser.add_argument("--levels", action="store_true")
     parser.add_argument("--verify", action="store_true")
+    parser.add_argument("--web-data", action="store_true")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     binary = args.input.read_bytes()
     validate_source(binary)
     if args.verify:
         verify(binary)
+    if args.web_data:
+        variants = {}
+        for name, multiplier, levels in [("levels", None, True)] + [(str(value), value, False) for value in MULTIPLIERS]:
+            result, patches, _, _ = build(binary, multiplier, levels)
+            variants[name] = sorted(patches.items())
+        hashes = {}
+        for multiplier in MULTIPLIERS:
+            for levels in (False, True):
+                result, _, _, _ = build(binary, multiplier, levels)
+                hashes[f"{multiplier}:{int(levels)}"] = hashlib.sha256(result).hexdigest()
+        result, _, _, _ = build(binary, None, True)
+        hashes["none:1"] = hashlib.sha256(result).hexdigest()
+        destination = ROOT / "web/asia-runtime-data.json"
+        destination.write_text(json.dumps({"sourceSha": SOURCE_SHA, "buildId": BUILD_ID, "variants": variants, "hashes": hashes}, separators=(",", ":")) + "\n")
+        print("已生成浏览器指令数据；不含游戏程序或存档")
     if args.output:
         destination = args.output.resolve()
         if not destination.is_relative_to(ROOT / ".tools"):
@@ -261,7 +278,7 @@ def main():
         with destination.open("xb") as stream:
             stream.write(result)
         print(f"实验候选：{destination.relative_to(ROOT)}；{len(patches)} 个指令字；text end=0x{word(result, 0x18):X}")
-    if not args.output and not args.verify:
+    if not args.output and not args.verify and not args.web_data:
         parser.error("请选择 --verify 或明确的 --output；不会自动安装候选")
 
 

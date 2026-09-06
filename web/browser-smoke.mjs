@@ -12,17 +12,19 @@ try{
   await page.getByText('就绪 · 文件只在浏览器本地处理').waitFor();
   for(const category of ['技能','战斗','角色','职业','据点','采矿','商店','编队']){
     await page.locator('#categories').getByRole('button',{name:category+' ›',exact:true}).click();
-    assert.equal(await page.locator('#category-title').textContent(),category);
+    assert.match(await page.locator('#categories button.active').textContent(),new RegExp('^'+category));
     assert.equal(await page.locator('iframe:visible').count(),0,`${category}错误显示任务编排`);
   }
   await page.getByRole('button',{name:'任务编队',exact:true}).click();
-  const frame=page.frameLocator('iframe');await frame.getByRole('heading',{name:'关卡编队',exact:true}).waitFor();
+  const frame=page.frameLocator('iframe');await frame.locator('.layout').waitFor();
+  await frame.locator('.module-tools summary').click();
   await frame.getByRole('button',{name:'导入编辑 JSON / ZIP…',exact:true}).waitFor();
+  await frame.locator('.module-tools summary').click();
   await page.screenshot({path:new URL('missions.png',output).pathname,fullPage:true});
   await page.locator('#categories').getByRole('button',{name:'职业 ›',exact:true}).click();
   assert.equal(await page.locator('iframe:visible').count(),0);
   await page.getByRole('button',{name:'默认装备',exact:true}).click();
-  await frame.getByRole('heading',{name:'职业默认装备',exact:true}).waitFor();
+  await frame.locator('.equiptype-cols').waitFor();
   assert.equal(await frame.getByRole('heading',{name:'关卡编队',exact:true}).count(),0);
   await page.screenshot({path:new URL('gear.png',output).pathname,fullPage:true});
   await page.locator('#categories').getByRole('button',{name:'战斗 ›',exact:true}).click();
@@ -54,8 +56,8 @@ try{
   await page.locator('#show-mod').click();
   await page.setViewportSize({width:390,height:844});await page.screenshot({path:new URL('mobile.png',output).pathname,fullPage:true});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false,'手机页面横向溢出');
-  for(const [category,view,heading] of [['编队','任务编队','关卡编队'],['职业','默认装备','职业默认装备']]){
-    await page.locator('#categories').getByRole('button',{name:new RegExp('^'+category)}).click();await page.getByRole('button',{name:view,exact:true}).click();await frame.getByRole('heading',{name:heading,exact:true}).waitFor();
+  for(const [category,view,selector] of [['编队','任务编队','.layout'],['职业','默认装备','.equiptype-cols']]){
+    await page.locator('#categories').getByRole('button',{name:new RegExp('^'+category)}).click();await page.getByRole('button',{name:view,exact:true}).click();await frame.locator(selector).waitFor();
     await page.screenshot({path:new URL(view==='任务编队'?'mobile-missions.png':'mobile-gear.png',output).pathname,fullPage:true});
     const overflow=await frame.locator('body').evaluate(()=>[...document.querySelectorAll('body *')].filter(node=>node.getBoundingClientRect().right>innerWidth+1).slice(0,12).map(node=>({tag:node.tagName,class:node.className,width:node.getBoundingClientRect().width})));
     assert.deepEqual(overflow,[],`${view}手机内页横向溢出`);

@@ -26,12 +26,23 @@ body {
 .app {
   max-width: 1800px;
   margin: 0 auto;
-  padding: 1.25rem;
+  padding: 0;
   height: 100dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
+
+.module-tools{flex-shrink:0;margin-bottom:8px;max-height:40%;overflow:auto;border-bottom:1px solid var(--line)}
+.module-tools summary,.panel details summary{cursor:pointer;color:var(--accent);font-size:12px;padding:6px 0}
+.module-tools .header{flex-direction:column;margin:0;padding:8px 0;gap:8px}
+.module-tools .header p{margin:0;font-size:12px}
+.module-tools .header-actions{width:100%;gap:6px}
+.module-tools .header-actions button{font-size:12px;padding:7px 10px}
+.module-tools .mod-name-field input{min-width:0;width:180px}
+.panel h2{font-family:inherit;font-size:18px;font-weight:600;line-height:1.4}
+.panel{border-radius:6px!important}
+.export-msg{max-height:40px;overflow:auto}
 
 .header {
   display: flex;

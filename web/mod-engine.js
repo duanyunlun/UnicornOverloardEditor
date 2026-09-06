@@ -45,7 +45,16 @@ export function generateMod(key,state,target,catalog){
     if(!writes.length)throw Error('尚未修改任何记录');const content=`@nsobid-${TARGETS[target].buildId}\n@flag offset_shift 0x100\n@enabled\n${writes.sort((left,right)=>left[0]-right[0]).map(([address,data])=>address.toString(16).padStart(8,'0').toUpperCase()+' '+hex(data)).join('\n')}\n@stop\n`;parsePatch(content,target);return content;
   }
   const suffix=target==='western'?'_western':'';let filename;
-  if(key==='experience_scale'||key==='enemy_level_scale'){if(target!=='western')throw Error('该运行时补丁仅支持欧美版，亚洲版代码洞尚未校准');if(key==='experience_scale'&&![0.1,0.25,0.5,0.75,1,1.25,1.5,2,10].includes(state.multiplier))throw Error('不支持的经验倍率');filename=key+'_western'+(key==='experience_scale'?'_'+state.multiplier:'')+'.pchtxt';}
+  if(key==='experience_scale'||key==='enemy_level_scale'){
+    if(key==='experience_scale'&&![0.1,0.25,0.5,0.75,1,1.25,1.5,2,10].includes(state.multiplier))throw Error('不支持的经验倍率');
+    if(target==='asia'){
+      const instructions=catalog.asiaRuntime?.variants[key==='enemy_level_scale'?'levels':String(state.multiplier)];
+      if(!instructions)throw Error('缺少亚洲版运行时指令数据');
+      const content=`@nsobid-${TARGETS.asia.buildId}\n@flag offset_shift 0x100\n@enabled\n${instructions.map(([address,value])=>address.toString(16).padStart(8,'0')+' '+hex(bytes(value))).join('\n')}\n@stop\n`;
+      parsePatch(content,target);return content;
+    }
+    filename=key+'_western'+(key==='experience_scale'?'_'+state.multiplier:'')+'.pchtxt';
+  }
   else if(key==='battle_preview'){if(!['hidden','imperfect'].includes(state.mode))throw Error('未知预览模式');filename=`battle_preview_${state.mode}${suffix}.pchtxt`;}
   else if(key==='character_randomizer')filename=`character_randomizer${suffix}_base.pchtxt`;
   else if(['battle_timer_freeze','unlimited_battle_start','six_member_units'].includes(key))filename=key+suffix+'.pchtxt';

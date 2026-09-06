@@ -1924,9 +1924,10 @@ function App() {
 
   return (
     <div className="app">
+      <details className="module-tools">
+      <summary>导入 / 独立导出</summary>
       <header className="header">
         <div>
-          <h1>{{ missions: "关卡编队", classes: "职业战术", presets: "命名战术预设", gear: "职业默认装备" }[frameView]}</h1>
           <p className="sub">
             {TARGETS[target].name} · TitleID {TARGETS[target].titleId} · 独立 ExeFS 补丁包
           </p>
@@ -1995,6 +1996,7 @@ function App() {
           </button>
         </div>
       </header>
+      </details>
       {modStatus && <p className="export-msg">{modStatus}</p>}
       {exportMsg && <p className="export-msg">{exportMsg}</p>}
 
@@ -2386,10 +2388,13 @@ function App() {
       ) : (
         <div className="catalog-layout">
           <aside className="panel">
+            <details>
+            <summary>默认装备规则</summary>
             <p className="hint">
               CreateDefaultEquip 默认装备表。职业表仅存储 DEFAULT_* 槽位 <em>类型</em> （如 lance、sword、_M）；运行时加上档位×11，并按等级选列。普通关卡敌人使用{" "}
               <strong>NORMAL_*</strong> （并非 DEFAULT_*）。ZAKO 限定为 DEFAULT_*；POWER/BOSS 使用相应档位。ENEMY_* 在限定后不使用。请按需要修改不同档位，不要只改 DEFAULT_*。
             </p>
+            </details>
             <input
               className="search"
               placeholder="筛选默认装备 / 道具…"
@@ -2471,6 +2476,8 @@ function EquiptypeItemsPanel({
   return (
     <div>
       <h2>{entry.symbol}</h2>
+      <details>
+      <summary>默认装备规则</summary>
       <p className="hint">
         默认装备类型 #{entry.id}。CharaSet 空装备槽按职业基础类型加档位×11，选择此行。
         {entry.symbol.startsWith("DEFAULT_")
@@ -2482,6 +2489,7 @@ function EquiptypeItemsPanel({
               : ""}{" "}
         关卡默认装备显示来自目录快照；修改默认装备表不会重算关卡显示，实际游戏按新表生成。
       </p>
+      </details>
       <div className="equiptype-cols">
         {labels.map((label, i) => (
           <label key={label} className="equiptype-col">
@@ -2495,6 +2503,7 @@ function EquiptypeItemsPanel({
               <button
                 type="button"
                 className="gear-clear"
+                data-no-translate=""
                 title="Clear to empty"
                 onClick={() => setCol(i, 0)}
               >

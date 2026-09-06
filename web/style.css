@@ -2,3 +2,12 @@
 aside{min-width:0}.page-heading{gap:12px;flex-wrap:wrap}.card,iframe{border-radius:8px}header small,h1{letter-spacing:0}
  .header-settings{display:flex;gap:20px;flex-wrap:wrap}.header-settings label{min-width:160px}iframe{height:780px;height:max(480px,calc(100dvh - 460px));min-height:0}button{white-space:normal} .header-settings select{max-width:100%}
 @media(max-width:850px){main #mod-workspace{grid-template-columns:minmax(0,1fr)}nav button{flex-shrink:0}}
+body{height:100dvh;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto}
+header{padding:10px 24px;gap:16px}header>strong{font-size:18px}.header-settings{gap:14px}.header-settings label{display:flex;align-items:center;gap:8px;font-size:12px;min-width:0}.header-settings select{width:auto;padding:7px 10px}
+.workspace-bar{padding:0 24px}.workspace-bar .tabs button{padding:10px 16px}
+main{width:100%;max-width:1800px;min-height:0;overflow:hidden;margin:0 auto;padding:12px 24px}
+#mod-workspace{height:100%;gap:18px;grid-template-columns:150px minmax(0,1fr)}aside{padding:0}nav{margin:0;gap:3px}nav button{padding:10px 14px}
+.content{display:flex;flex-direction:column;min-height:0}.sub-tabs{margin:0 0 8px;flex-shrink:0}#module-panel{overflow:auto;min-height:0}#module-panel:empty{display:none}#mission-host{flex:1;min-height:0}iframe{height:100%;border:0;border-radius:0;display:block}
+.card{padding:14px 0;border:0;border-radius:0;background:transparent;margin:0}.card h3{display:none}.card p{margin:0 0 10px}.card-head{gap:12px;margin-bottom:12px}.warning{margin:8px 0;padding:8px 10px}.record-picker{margin-bottom:12px;padding-bottom:12px}.grid{gap:12px 16px}
+#save-workspace{height:100%;overflow:auto}footer{position:static;padding:10px 24px;gap:12px}footer>div:first-child{min-width:0}footer strong{display:none}#status{display:block;margin-top:4px;overflow-wrap:anywhere}
+@media(max-width:850px){body{height:auto;min-height:100dvh;grid-template-rows:auto auto 1fr auto}header{padding:10px 14px;flex-wrap:wrap}.header-settings{gap:8px}.header-settings label{display:grid;gap:4px}.header-settings select{width:100%}main{padding:10px 14px;overflow:visible}#mod-workspace{height:auto;gap:8px}iframe{height:max(600px,calc(100dvh - 250px))}.content{min-height:0}footer{padding:10px 14px}#mission-host{flex:none}#module-panel{overflow:visible}.card-head{flex-wrap:wrap}.workspace-bar{padding:0 14px}}

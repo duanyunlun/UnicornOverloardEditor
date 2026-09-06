@@ -6,8 +6,9 @@ const root=dirname(fileURLToPath(import.meta.url));
 const destination=resolve(root,'dist');
 await rm(destination,{recursive:true,force:true});
 await mkdir(resolve(destination,'data'),{recursive:true});
-for(const name of ['index.html','app.js','style.css','save.js','mod-engine.js','i18n.js']) await copyFile(resolve(root,name),resolve(destination,name));
+for(const name of ['index.html','app.js','style.css','save.js','mod-engine.js','i18n.js','asia-runtime.js']) await copyFile(resolve(root,name),resolve(destination,name));
 const catalog={info:{},templates:{},fortLocations:[]};
+catalog.asiaRuntime=JSON.parse(await readFile(resolve(root,'asia-runtime-data.json'),'utf8'));
 for(const [folder,extension,key] of [['info','.txt','info'],['mods','.pchtxt','templates']]) {
   for(const name of await readdir(resolve(root,'../UnicornOverlord',folder))) if(name.endsWith(extension)) catalog[key][name]=await readFile(resolve(root,'../UnicornOverlord',folder,name),'utf8');
 }

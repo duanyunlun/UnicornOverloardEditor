@@ -1,5 +1,6 @@
 import {TARGETS,rows,generateMod,validateConflicts,zipFiles} from './mod-engine.js';
 import {mountSave,download} from './save.js';
+import {isAsiaRuntime,validateAsiaSource,buildAsiaMain} from './asia-runtime.js';
 import {configureTranslations,setLanguage,getLanguage,t,translateDom,localizedName} from './i18n.js';
 const $=id=>document.getElementById(id);
 const notify=(message,error=false)=>{$('status').textContent=t(message);$('status').className=error?'error':'';};
@@ -12,6 +13,7 @@ const definitions=[
   ['编队','six_member_units','六人编队','允许S级声望部队扩充到六人。卸载前必须撤下第六名成员。'],['编队','missions','任务编队','按任务编辑队伍成员、站位、装备与战术。'],['编队','presets','战术预设','编辑共享预设、创建新预设与私有复制。'],
 ];
 let catalog,project={schema:1,target:'asia',modules:{}},category='技能',moduleKey='ability_editor',saveController;
+let asiaSource;
 const missionKeys=new Set(['missions','presets','classes','gear']);let missionFrame,frameReady=false;
 const pendingRequests=new Map();
 const recordSelections=new Map();
@@ -39,14 +41,22 @@ function checkbox(parent,label,value,callback){const wrapper=element('label',und
 function render(){renderContent();translateDom(document.body);}
 function renderContent(){
   $('categories').replaceChildren();for(const label of [...new Set(definitions.map(row=>row[0]))]){const node=button($('categories'),label,()=>{category=label;moduleKey=definitions.find(row=>row[0]===category)[1];render();});node.className=category===label?'active':'';element('span','›',node);}
-  $('category-title').textContent=category;$('module-tabs').replaceChildren();for(const row of definitions.filter(row=>row[0]===category)){const node=button($('module-tabs'),row[2],()=>{moduleKey=row[1];render();});node.className=moduleKey===row[1]?'active':'';}
+  $('module-tabs').replaceChildren();for(const row of definitions.filter(row=>row[0]===category)){const node=button($('module-tabs'),row[2],()=>{moduleKey=row[1];render();});node.className=moduleKey===row[1]?'active':'';}
   $('module-panel').replaceChildren();$('mission-host').hidden=!missionKeys.has(moduleKey);
   if(missionKeys.has(moduleKey)){
     ensureFrame();if(frameReady)missionFrame.contentWindow.postMessage({type:'uo-view',view:moduleKey,target:project.target},location.origin);
     updateCount();return;
   }
   const selected=state(),definition=definitions.find(row=>row[1]===moduleKey),card=element('section',undefined,$('module-panel'));card.className='card';const head=element('div',undefined,card);head.className='card-head';const title=element('div',undefined,head);element('h3',definition[2],title);element('p',definition[3],title);checkbox(head,'启用此模块',selected.enabled,value=>{selected.enabled=value;updateCount();});
-  if(['experience_scale','enemy_level_scale'].includes(moduleKey)){const warning=element('div','仅支持欧美版 v1.0.5；亚洲版代码洞未校准，禁止导出。未经过本地游戏运行验证。',card);warning.className='warning';}
+  if(['experience_scale','enemy_level_scale'].includes(moduleKey)){
+    const warning=element('div',project.target==='asia'?'亚洲版：2 倍经验与动态等级已完成样本实测；其他倍率和例外关卡未逐项实测。动态等级不重建旧战斗存档中的敌军。':'欧美版运行时补丁未经过本地游戏运行验证。',card);warning.className='warning';
+    if(project.target==='asia'){
+      const controls=element('div',undefined,card);controls.className='actions';
+      button(controls,asiaSource?'更换原始 main':'选择原始 main',()=>{const input=document.createElement('input');input.type='file';input.onchange=async()=>{try{const file=input.files[0];if(!file)return;if(file.size>128*1024*1024)throw Error('游戏程序超过 128 MiB');const candidate=await validateAsiaSource(await file.arrayBuffer(),catalog.asiaRuntime);asiaSource=candidate;render();notify('原始 main 校验通过，仅保留在当前浏览器内存');}catch(error){notify(error.message,true);}};input.click();});
+      element('span',asiaSource?'原始 main 已校验':'未选择原始 main（未压缩 NSO）',controls);
+      if(asiaSource)button(controls,'清除原始 main',()=>{asiaSource=undefined;render();});
+    }
+  }
   if(moduleKey.endsWith('_editor'))renderRecords(card,selected);
   else{
     const grid=element('div',undefined,card);grid.className='grid';
@@ -56,7 +66,7 @@ function renderContent(){
     if(moduleKey==='experience_scale')field(grid,'经验倍率',selected.multiplier,value=>selected.multiplier=value,[0.1,0.25,0.5,0.75,1,1.25,1.5,2,10].map(value=>[value,`${value} 倍`]));
     if(moduleKey==='type_matchups')for(const [key,label] of [['cavalryVsInfantry','骑兵 → 步兵'],['archerVsFlying','弓兵 → 飞行'],['flyingVsCavalry','飞龙 / 狮鹫 → 骑兵']])field(grid,label,selected[key],value=>selected[key]=value,[0.5,0.75,1,1.25,1.5,2,2.5,3,4,5,6,8,10].map(value=>[value,value+' 倍']));
   }
-  const details=element('details',undefined,card);element('summary','查看此模块补丁',details);const preview=element('pre','展开后生成预览',details);details.ontoggle=()=>{if(details.open)try{preview.textContent=generateMod(moduleKey,selected,project.target,catalog);}catch(error){preview.textContent=error.message;}};updateCount();
+  const details=element('details',undefined,card);element('summary',isAsiaRuntime(moduleKey,project.target)?'查看写入预览（非独立 pchtxt）':'查看此模块补丁',details);const preview=element('pre','展开后生成预览',details);details.ontoggle=()=>{if(details.open)try{preview.textContent=generateMod(moduleKey,selected,project.target,catalog);}catch(error){preview.textContent=error.message;}};updateCount();
 }
 function renderRecords(card,selected){
   const key=moduleKey,filename={ability_editor:'skill.txt',class_editor:'classmod.txt',fort_editor:'fortmod.txt',mine_editor:'minemod.txt',shop_editor:'shopmod.txt'}[key],all=rows(catalog.info[filename]);
@@ -97,10 +107,14 @@ $('import-project').onclick=()=>{const input=document.createElement('input');inp
 $('reset').onclick=async()=>{try{if(!confirm(t('清空全部MOD工程修改，包括任务、职业默认装备与预设？')))return;if(missionFrame)await requestFrame('uo-load-edits',{edits:{}});project={schema:1,target:project.target,modules:{}};render();notify('全部MOD修改已重置');}catch(error){notify(error.message,true);}};
 $('export').onclick=async()=>{try{
   const snapshot=structuredClone(project);
+  const source=asiaSource;
   const patches=Object.entries(snapshot.modules).filter(([,value])=>value.enabled).map(([key,value])=>({key,content:generateMod(key,value,snapshot.target,catalog)}));
   if(missionFrame){const result=await requestFrame('uo-request-patch',{target:snapshot.target});snapshot.missionEdits=result.edits;if(result.content)patches.push({key:'mission_editor',content:result.content});}
   if(!patches.length)throw Error('没有可导出的修改；请启用普通模块或编辑任务/默认装备');validateConflicts(patches);
-  const target=TARGETS[snapshot.target];const files=patches.map(patch=>({name:`${patch.key}/exefs/${target.buildId}.pchtxt`,content:patch.content}));
+  const target=TARGETS[snapshot.target],runtime=patches.some(patch=>isAsiaRuntime(patch.key,snapshot.target));
+  if(runtime&&!source)throw Error('请在经验倍率或动态等级模块选择原始 main');
+  const files=runtime?[{name:'unicorn_asia_merged/exefs/main',content:await buildAsiaMain(source,patches,catalog.asiaRuntime)}]:patches.map(patch=>({name:`${patch.key}/exefs/${target.buildId}.pchtxt`,content:patch.content}));
+  if(runtime)files.push({name:'亚洲版运行时说明.txt',content:t('亚洲版导出为单一 main，包含本工程全部启用修改。请禁用旧版重叠 MOD，停止游戏后安装并重新启动。原始 main 不写入工程 JSON；重新打开网页后需重新选择。生成的 main 含游戏程序，请勿公开分发。')});
   files.push({name:'unicorn-mod-project.json',content:JSON.stringify(snapshot,null,2)},{name:'使用说明.txt',content:`独角兽之王 MOD · ${snapshot.target} v1.0.5\nTitle ID: ${target.titleId}\n将模块文件夹放入模拟器对应游戏的MOD目录。仅支持匹配Build ID。请备份存档；静态测试不代表游戏内验证。\n工程包含任务/战术/默认装备的全部编辑；导出已统一检查模块间字节冲突。`},{name:'THIRD_PARTY_MODS.txt',content:await (await fetch('./THIRD_PARTY_MODS.txt')).text()});
   download('UnicornOverlord_MOD_'+snapshot.target+'.zip',zipFiles(files));notify(`已导出 ${patches.length} 个模块，字节冲突检查通过`);
 }catch(error){notify(error.message,true);}};
