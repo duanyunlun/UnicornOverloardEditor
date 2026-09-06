@@ -39,3 +39,9 @@ test('同名中文物品按记录取译文，不通过名称反查覆盖',()=>{
   }
   assert.equal(localizedName(undefined,9999),'ID 9999');
 });
+test('清空按钮叉号不是倍率，三语保留符号并翻译动作提示',()=>{
+  configureTranslations(catalog);
+  for(const [language,title] of [['zh-CN','清空此装备槽'],['en-US','Clear this equipment slot'],['ja-JP','この装備枠を空にする']]){
+    setLanguage(language);assert.equal(t('×'),'×');assert.equal(t(' × '),' × ');assert.equal(t('清空此装备槽'),title);
+  }
+});

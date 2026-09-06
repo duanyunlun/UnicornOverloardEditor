@@ -2503,8 +2503,8 @@ function EquiptypeItemsPanel({
               <button
                 type="button"
                 className="gear-clear"
-                data-no-translate=""
-                title="Clear to empty"
+                title="清空此装备槽"
+                aria-label={`清空装备档位 ${i + 1}`}
                 onClick={() => setCol(i, 0)}
               >
                 ×
@@ -3639,8 +3639,8 @@ function UnitPanel({
               <button
                 type="button"
                 className="gear-clear"
-                title="Remove item from this slot"
-                aria-label={`Remove item from slot ${i}`}
+                title="清空此装备槽"
+                aria-label={`清空装备槽 ${i}`}
                 disabled={!g.item_id}
                 onClick={() => setGearItem(i, 0)}
               >

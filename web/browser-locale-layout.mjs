@@ -53,6 +53,15 @@ try{
   assert.ok(Math.abs((await detail.boundingBox()).y-detailTop)<2,'滚动关卡列表不应移动详情');
   assert.ok(await panels.first().evaluate(node=>node.scrollTop>0));
   await page.screenshot({path:new URL('mission-independent-scroll.png',output).pathname});
+  for(const tab of ['missions','gear']){
+    if(tab==='gear'){await page.locator('#categories button').nth(3).click();await page.locator('#module-tabs button').nth(2).click();}
+    for(const [language,title] of [['zh-CN','清空此装备槽'],['en-US','Clear this equipment slot'],['ja-JP','この装備枠を空にする']]){
+      await page.locator('#language').selectOption(language);
+      const buttons=frame.locator('.gear-clear');await frame.locator(`.gear-clear[title="${title}"]`).first().waitFor();assert.ok(await buttons.count()>0);
+      for(const button of await buttons.all()){assert.equal((await button.textContent()).trim(),'×');assert.equal(await button.getAttribute('title'),title);assert.ok(await button.getAttribute('aria-label'));}
+    }
+  }
+  await page.locator('#categories button').nth(7).click();await page.locator('#module-tabs button').nth(1).click();
   for(const language of ['zh-CN','en-US','ja-JP']){
     await page.locator('#language').selectOption(language);await page.setViewportSize({width:390,height:844});
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
