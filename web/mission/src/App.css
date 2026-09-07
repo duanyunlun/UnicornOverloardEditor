@@ -319,12 +319,14 @@ h3 { font-size: 15px; margin-top: 12px; }
 }
 
 .combo-trigger {
+  position: relative;
   width: 100%;
   text-align: left;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 0.1rem;
-  padding: 0.4rem 0.5rem;
+  padding: 0.4rem 28px 0.4rem 0.5rem;
   border: 1px solid var(--line);
   border-radius: 6px;
   background: var(--panel);
@@ -335,9 +337,8 @@ h3 { font-size: 15px; margin-top: 12px; }
 
 .combo-label {
   font-weight: 600;
-  padding-right: 12px;
 }
-.combo-trigger::after { content: ""; position: absolute; right: 10px; top: 14px; width: 6px; height: 6px; border-right: 1px solid var(--muted); border-bottom: 1px solid var(--muted); transform: rotate(45deg); pointer-events: none; }
+.combo-trigger::after { content: ""; position: absolute; right: 10px; top: 50%; width: 6px; height: 6px; border-right: 1px solid var(--muted); border-bottom: 1px solid var(--muted); transform: translateY(-70%) rotate(45deg); pointer-events: none; }
 
 .combo-secondary {
   color: var(--muted);
@@ -389,6 +390,7 @@ h3 { font-size: 15px; margin-top: 12px; }
   text-align: left;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 0.05rem;
   border: none;
   background: transparent;
@@ -444,7 +446,7 @@ select {
 
 .gear-slot-row {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   gap: 0.35rem;
 }
 
@@ -464,7 +466,9 @@ select {
   line-height: 1;
   cursor: pointer;
   padding: 0;
-  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   height: 36px;
 }
 
@@ -677,7 +681,13 @@ button.linkish {
 .class-line-row label,
 .preset-line-row label {
   margin: 0;
+  align-self: stretch;
+  display: grid;
+  grid-template-rows: auto 1fr;
 }
+
+.class-line-row label .combo-trigger,
+.preset-line-row label .combo-trigger { height: 100%; }
 
 .preset-line-row {
   display: grid;

@@ -12,6 +12,21 @@ try{
       for(const frame of page.frames()){
         const overflow=await frame.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,controls:[...document.querySelectorAll('button,input,select,textarea')].filter(node=>{const bounds=node.getBoundingClientRect(),panel=node.closest('.panel')?.getBoundingClientRect();return bounds.width>0&&!node.closest('nav,.tabs,.combo-pop')&&(bounds.width>innerWidth||bounds.right>innerWidth+1&&bounds.left>=0||panel&&bounds.right>panel.right+1);}).slice(0,8).map(node=>({text:node.textContent.slice(0,40),class:node.className}))}));
         if(overflow.scroll>overflow.width+1||overflow.controls.length)findings.push({width,language,name,frame:frame===page.mainFrame()?'outer':'inner',...overflow});
+        const alignment=await frame.evaluate(()=>{
+          const issues=[];
+          for(const trigger of document.querySelectorAll('.combo-trigger,.combo-option')){
+            const bounds=trigger.getBoundingClientRect(),children=[...trigger.children].map(child=>child.getBoundingClientRect()).filter(rect=>rect.height);
+            if(!bounds.height||!children.length)continue;
+            const offset=Math.abs((children[0].top+children.at(-1).bottom-bounds.top-bounds.bottom)/2);
+            if(offset>1)issues.push({control:trigger.className,offset});
+          }
+          for(const row of document.querySelectorAll('.gear-slot-row')){
+            const trigger=row.querySelector('.combo-trigger')?.getBoundingClientRect(),clear=row.querySelector('.gear-clear')?.getBoundingClientRect();
+            if(trigger?.height&&clear?.height){const offset=Math.abs((trigger.top+trigger.bottom-clear.top-clear.bottom)/2);if(offset>1)issues.push({control:'gear-clear',offset});}
+          }
+          return issues;
+        });
+        if(alignment.length)findings.push({width,language,name,alignment});
       }
       await page.screenshot({path:new URL(`${width}-${language}-${name}.png`,output).pathname,fullPage:true});
       screens++;
