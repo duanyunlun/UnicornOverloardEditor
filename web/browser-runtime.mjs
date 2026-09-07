@@ -24,6 +24,11 @@ try{
   }
   await page.setViewportSize({width:1440,height:900});
   await page.getByRole('button',{name:/^战斗/}).click();
+  for(const name of ['动态等级','经验倍率']){
+    await page.getByRole('button',{name,exact:true}).click();
+    assert.equal(await page.locator('#module-panel .warning').count(),0,'亚洲版不再显示验证状态横幅');
+    await page.getByRole('button',{name:'选择原始 main',exact:true}).waitFor();
+  }
   await page.getByRole('button',{name:'经验倍率',exact:true}).click();
   await page.getByLabel('经验倍率',{exact:true}).selectOption('2');
   await page.getByLabel('启用此模块').check();

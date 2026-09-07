@@ -50,7 +50,7 @@ function renderContent(){
   }
   const selected=state(),definition=definitions.find(row=>row[1]===moduleKey),card=element('section',undefined,$('module-panel'));card.className='card';const head=element('div',undefined,card);head.className='card-head';const title=element('div',undefined,head);element('h3',definition[2],title);element('p',definition[3],title);checkbox(head,'启用此模块',selected.enabled,value=>{selected.enabled=value;updateCount();});
   if(['experience_scale','enemy_level_scale'].includes(moduleKey)){
-    const warning=element('div',project.target==='asia'?'亚洲版：2 倍经验与动态等级已完成样本实测；其他倍率和例外关卡未逐项实测。动态等级不重建旧战斗存档中的敌军。':'欧美版运行时补丁未经过本地游戏运行验证。',card);warning.className='warning';
+    if(project.target==='western')element('div','欧美版运行时补丁未经过本地游戏运行验证。',card).className='warning';
     if(project.target==='asia'){
       const controls=element('div',undefined,card);controls.className='actions';
       button(controls,asiaSource?'更换原始 main':'选择原始 main',()=>{const input=document.createElement('input');input.type='file';input.onchange=async()=>{try{const file=input.files[0];if(!file)return;if(file.size>128*1024*1024)throw Error('游戏程序超过 128 MiB');const candidate=await validateAsiaSource(await file.arrayBuffer(),catalog.asiaRuntime);asiaSource=candidate;render();notify('原始 main 校验通过，仅保留在当前浏览器内存');}catch(error){notify(error.message,true);}};input.click();});
