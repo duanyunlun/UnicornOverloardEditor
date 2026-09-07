@@ -14,11 +14,21 @@ try{
         if(overflow.scroll>overflow.width+1||overflow.controls.length)findings.push({width,language,name,frame:frame===page.mainFrame()?'outer':'inner',...overflow});
         const alignment=await frame.evaluate(()=>{
           const issues=[];
-          for(const trigger of document.querySelectorAll('.combo-trigger,.combo-option')){
-            const bounds=trigger.getBoundingClientRect(),children=[...trigger.children].map(child=>child.getBoundingClientRect()).filter(rect=>rect.height);
+          for(const trigger of document.querySelectorAll('button')){
+            if(trigger.matches('.ref-toggle,.linkish'))continue;
+            const bounds=trigger.getBoundingClientRect(),children=[...trigger.childNodes].flatMap(child=>{
+              if(child.nodeType===Node.TEXT_NODE&&!child.textContent.trim())return [];
+              if(child.nodeType===Node.TEXT_NODE){const range=document.createRange();range.selectNodeContents(child);return [...range.getClientRects()];}
+              return child.nodeType===Node.ELEMENT_NODE?[child.getBoundingClientRect()]:[];
+            }).filter(rect=>rect.height);
             if(!bounds.height||!children.length)continue;
-            const offset=Math.abs((children[0].top+children.at(-1).bottom-bounds.top-bounds.bottom)/2);
-            if(offset>1)issues.push({control:trigger.className,offset});
+            const style=getComputedStyle(trigger),center=(bounds.top+bounds.bottom+parseFloat(style.borderTopWidth)-parseFloat(style.borderBottomWidth))/2;
+            const offset=Math.abs((Math.min(...children.map(rect=>rect.top))+Math.max(...children.map(rect=>rect.bottom)))/2-center);
+            if(offset>2)issues.push({control:trigger.className,text:trigger.textContent.slice(0,35),offset});
+            if(style.textAlign==='center'&&style.justifyContent==='center'&&style.flexDirection==='row'){
+              const horizontal=Math.abs((Math.min(...children.map(rect=>rect.left))+Math.max(...children.map(rect=>rect.right))-bounds.left-bounds.right)/2);
+              if(horizontal>2)issues.push({control:trigger.className,text:trigger.textContent.slice(0,35),horizontal});
+            }
           }
           for(const row of document.querySelectorAll('.gear-slot-row')){
             const trigger=row.querySelector('.combo-trigger')?.getBoundingClientRect(),clear=row.querySelector('.gear-clear')?.getBoundingClientRect();
@@ -70,7 +80,12 @@ try{
     const data=new DataView(fixture.buffer);for(const [index,id] of [8,9,282,283].entries()){data.setUint32(0xa0+index*20,id,true);data.setUint32(0xa4+index*20,index+1,true);fixture[0xa8+index*20]=index<2?1:0;}
     const chooser=page.waitForEvent('filechooser');await page.locator('#save-workspace button').first().click();await(await chooser).setFiles({name:'layout.DAT',mimeType:'application/octet-stream',buffer:Buffer.from(fixture)});
     await page.locator('#save-workspace .tabs').waitFor();
-    for(let tab=0;tab<5;tab++){await page.locator('#save-workspace .tabs button').nth(tab).click();if(tab===4)assert.equal(await page.locator('#save-workspace .grid > .card h3:visible').count(),10);await capture(`save-${tab}`);}
+    for(let tab=0;tab<5;tab++){
+      await page.locator('#save-workspace .tabs button').nth(tab).click();if(tab===4)assert.equal(await page.locator('#save-workspace .grid > .card h3:visible').count(),10);await capture(`save-${tab}`);
+      await page.locator('#save-workspace details').evaluateAll(nodes=>nodes.forEach(node=>node.open=true));await capture(`save-${tab}-expanded`);
+      await page.locator('#save-workspace').evaluate(node=>{node.scrollTop=node.scrollHeight;});await capture(`save-${tab}-bottom`);
+      await page.locator('#save-workspace').evaluate(node=>{node.scrollTop=0;});
+    }
     await page.close();
   }
   await writeFile(new URL('findings.json',output),JSON.stringify({findings,errors},null,2));

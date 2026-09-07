@@ -20,7 +20,7 @@
 }
 
 button, input, select, textarea { font: inherit; color: inherit; }
-button { min-height: 36px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); cursor: pointer; overflow-wrap: anywhere; }
+button { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); cursor: pointer; overflow-wrap: anywhere; }
 button:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
 button:disabled { opacity: .5; cursor: not-allowed; }
 input, select, textarea { min-width: 0; max-width: 100%; background: var(--panel); }
@@ -202,6 +202,9 @@ h3 { font-size: 15px; margin-top: 12px; }
   color: var(--muted);
   font-size: 0.78rem;
 }
+.list button { flex-direction: column; align-items: stretch; }
+.row > :is(h2,h3) { margin: 0; }
+.row > .search { margin-bottom: 0; }
 
 .list button.active,
 .tabs button.active {
@@ -219,6 +222,7 @@ h3 { font-size: 15px; margin-top: 12px; }
 }
 .catalog-layout > aside > .row .search { flex-basis: 100%; }
 .catalog-layout > aside > .row button { flex: 1 1 90px; }
+.catalog-layout > aside > .row { align-items: stretch; }
 
 .row-actions {
   display: flex;
@@ -324,6 +328,7 @@ h3 { font-size: 15px; margin-top: 12px; }
   text-align: left;
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   justify-content: center;
   gap: 0.1rem;
   padding: 0.4rem 28px 0.4rem 0.5rem;
@@ -390,6 +395,7 @@ h3 { font-size: 15px; margin-top: 12px; }
   text-align: left;
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   justify-content: center;
   gap: 0.05rem;
   border: none;
@@ -415,7 +421,6 @@ h3 { font-size: 15px; margin-top: 12px; }
   display: flex;
   gap: 0.25rem;
   align-items: center;
-  padding-bottom: 0.35rem;
 }
 
 .line-actions button {
@@ -679,7 +684,8 @@ button.linkish {
 }
 
 .class-line-row label,
-.preset-line-row label {
+.preset-line-row label,
+.line-row label {
   margin: 0;
   align-self: stretch;
   display: grid;
@@ -687,7 +693,8 @@ button.linkish {
 }
 
 .class-line-row label .combo-trigger,
-.preset-line-row label .combo-trigger { height: 100%; }
+.preset-line-row label .combo-trigger,
+.line-row label .combo-trigger { height: 100%; }
 
 .preset-line-row {
   display: grid;
@@ -751,6 +758,16 @@ button.linkish {
 }
 
 .class-line-row > *, .preset-line-row > *, .line-row > *, .gear-grid > * { min-width: 0; }
+@container (min-width: 741px) {
+  .preset-line-row { grid-template-rows: auto auto auto; row-gap: 0.25rem; }
+  .preset-line-row > label { grid-row: 1 / 4; grid-template-rows: subgrid; }
+  .preset-line-row > label:nth-child(2) { grid-column: 2; }
+  .preset-line-row > label:nth-child(3) { grid-column: 3; }
+  .preset-line-row > label:nth-child(4) { grid-column: 4; }
+  .preset-line-row > .drag-handle, .preset-line-row > button { grid-row: 2; align-self: stretch; margin: 0; }
+  .preset-line-row > .drag-handle { grid-column: 1; }
+  .preset-line-row > button { grid-column: 5; }
+}
 @container (max-width: 740px) {
   .class-line-row { grid-template-columns: repeat(4,minmax(0,1fr)); align-items: start; }
   .class-line-row > strong { grid-column: 1 / -1; }
@@ -826,6 +843,8 @@ button.linkish {
 .formation-cell {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
   gap: 0.15rem;
   min-height: 4.4rem;
   padding: 0.4rem 0.45rem;
@@ -922,7 +941,7 @@ button.linkish {
   .mod-name-field { grid-column: 1 / -1; }
   .header .sub { overflow-wrap: anywhere; }
   .equiptype-cols { grid-template-columns: minmax(0, 1fr); }
-  button { min-height: 40px; }
+  button, input:not([type=checkbox]), select { min-height: 40px; }
   .gear-clear { height: 40px; }
 }
 
