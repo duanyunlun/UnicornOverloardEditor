@@ -75,7 +75,7 @@ export function SearchableCombobox({
         <span className="combo-label">
           {selected?.label || (value === 0 ? emptyLabel : `id ${value}`)}
         </span>
-        {selected?.secondary ? (
+        {selected?.secondary && t(selected.secondary).trim() !== t(selected.label).trim() ? (
           <span className="combo-secondary">{selected.secondary}</span>
         ) : null}
       </button>
@@ -111,7 +111,7 @@ export function SearchableCombobox({
                     }}
                   >
                     <span>{o.label}</span>
-                    {o.secondary ? (
+                    {o.secondary && t(o.secondary).trim() !== t(o.label).trim() ? (
                       <span className="combo-secondary">{o.secondary}</span>
                     ) : null}
                   </button>

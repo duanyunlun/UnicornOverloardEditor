@@ -59,6 +59,12 @@ try{
       await page.locator('#language').selectOption(language);
       const buttons=frame.locator('.gear-clear');await frame.locator(`.gear-clear[title="${title}"]`).first().waitFor();assert.ok(await buttons.count()>0);
       for(const button of await buttons.all()){assert.equal((await button.textContent()).trim(),'×');assert.equal(await button.getAttribute('title'),title);assert.ok(await button.getAttribute('aria-label'));}
+      const combo=frame.locator(tab==='gear'?'.equiptype-cols .combo':'.gear-grid .combo').first();
+      await combo.locator('.combo-trigger').click();await combo.locator('.combo-option').first().waitFor();
+      const duplicates=await frame.locator('.combo-trigger,.combo-option').evaluateAll(nodes=>nodes.filter(node=>{const secondary=node.querySelector('.combo-secondary');return secondary&&secondary.textContent.trim()===node.firstElementChild.textContent.trim();}).map(node=>node.textContent));
+      assert.deepEqual(duplicates,[],'名称与副标题翻译后相同，不应重复显示');
+      if(tab==='gear'&&language==='zh-CN')await page.screenshot({path:new URL('gear-no-duplicate.png',output).pathname});
+      await combo.locator('.combo-search').press('Escape');
     }
   }
   await page.locator('#categories button').nth(7).click();await page.locator('#module-tabs button').nth(1).click();
