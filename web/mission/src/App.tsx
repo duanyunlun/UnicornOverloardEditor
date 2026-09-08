@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import {configureTranslations, setLanguage, t, LANGUAGES} from '../../i18n.js';
+import {configureTranslations, setLanguage, t, LANGUAGES, presetDisplayName} from '../../i18n.js';
 import "./App.css";
 import {
   SearchableCombobox,
@@ -1882,6 +1882,7 @@ function App() {
       if (!q) return true;
       if (
         entry.symbol.toLowerCase().includes(q) ||
+        presetDisplayName(entry).toLowerCase().includes(q) ||
         String(entry.id).includes(q)
       ) {
         return true;
@@ -2312,7 +2313,7 @@ function App() {
                       className={entry.id === selectedPreset?.id ? "active" : ""}
                       onClick={() => setPresetId(entry.id)}
                     >
-                      <strong>{entry.symbol || `EquipAiSet ${entry.id}`}</strong>
+                      <strong title={entry.symbol}>{presetDisplayName(entry)}</strong>
                       <span>
                         {entry.id < 0
                           ? "New (unexported)"
@@ -2849,20 +2850,13 @@ function PresetPanel({
           />
         </label>
       ) : (
-        <h2>{preset.symbol || `EquipAiSet ${preset.id}`}</h2>
+        <h2 title={preset.symbol}>{presetDisplayName(preset)}</h2>
       )}
       <p className="sub">
         {preset.id < 0
           ? "New preset (empty until you add slots; export allocates a free id)"
           : `ID ${preset.id} · ${preset.usage} UnitSet references · Skill-AI ${preset.skill_ai_id} · counts ${preset.count_a}/${preset.count_b}`}
       </p>
-      <div className="meta-box">
-        <strong>共享战术预设</strong>
-        <p className="hint">
-          非零预设使用战术表 <code>0x270AF48</code> （标记 3–10 指职业主动/被动槽，也可指定技能 ID）。装备技能{" "}
-          <em>不会</em> 自动加入；需要时须显式添加。非零预设为空时，游戏中没有战术。
-        </p>
-      </div>
 
       <h3>
         影响引用（{preset.references?.length ?? 0}
@@ -3577,7 +3571,7 @@ function UnitPanel({
               .sort((a, b) => a.id - b.id)
               .map((p) => (
                 <option key={p.id} value={String(p.id)}>
-                  {p.id} — {p.symbol || "preset"} ({p.usage} refs)
+                  {presetDisplayName(p)} ({p.usage} refs)
                 </option>
               ))}
             <option value="__create__">创建空预设…</option>

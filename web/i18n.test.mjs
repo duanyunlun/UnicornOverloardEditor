@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {configureTranslations,setLanguage,t,LANGUAGES,localizedName} from './i18n.js';
+import {configureTranslations,setLanguage,t,LANGUAGES,localizedName,presetDisplayName} from './i18n.js';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const names=JSON.parse(read('./game-names.json'));
 const doc=JSON.parse(gunzipSync(readFileSync(new URL('./info/mission_catalog.json.gz',import.meta.url))));
@@ -15,6 +15,18 @@ for(const [entries,file,id,symbol] of [[doc.class_tactics,'class.txt','class_id'
 for(const entry of doc.missions)nameTranslations.push({values:names.missions[entry.quest_id],aliases:[entry.quest_symbol]});
 for(const entry of doc.equipai_if)nameTranslations.push({values:names.conditions[entry.id],aliases:[entry.symbol]});
 const catalog={info,nameTranslations,uiTranslations:JSON.parse(read('./ui-translations.json')),locales:Object.fromEntries(LANGUAGES.map(language=>[language,JSON.parse(read('./locales/'+language+'.json'))]))};
+test('原版战术预设显示关联职业或技能，自定义名称与原始数据不变',()=>{
+  const before=JSON.stringify(doc.equipaiset_presets);
+  for(const language of LANGUAGES){
+    setLanguage(language);configureTranslations(catalog);
+    for(const preset of doc.equipaiset_presets){assert.ok(presetDisplayName(preset).includes('#'+preset.id));assert.ok(!presetDisplayName(preset).includes(preset.symbol));}
+    const fighter=doc.equipaiset_presets.find(preset=>preset.id===2);
+    assert.ok(presetDisplayName(fighter).includes(t('FIGHTER_HG')));
+    assert.ok(presetDisplayName(doc.equipaiset_presets[0]).includes(t('Killing Chain')));
+    assert.equal(presetDisplayName({id:-1,symbol:'我的预设'}),'我的预设');
+  }
+  assert.equal(JSON.stringify(doc.equipaiset_presets),before);
+});
 test('仓库中英日名称、关卡和条件按语言显示，数据标识不变',()=>{
   const original=JSON.stringify(catalog);
   assert.equal(Object.keys(names.missions).length,90);

@@ -66,7 +66,16 @@ try{
       await combo.locator('.combo-search').press('Escape');
     }
   }
-  await page.locator('#categories button').nth(7).click();await page.locator('#module-tabs button').nth(1).click();
+  await page.locator('#categories button').nth(7).click();await page.locator('#module-tabs button').nth(2).click();
+  await frame.locator('.view-tabs button:nth-child(3).active').waitFor({state:'attached'});
+  await frame.locator('.catalog-layout aside .sort-row select').selectOption('');
+  await page.locator('#language').selectOption('zh-CN');
+  const presetSearch=frame.locator('.catalog-layout aside .search');await presetSearch.fill('CH_FIGHTER_HIGHCLASS');
+  const presetButton=frame.locator('.list button').filter({hasText:'先锋'});await presetButton.click();
+  await frame.getByRole('heading',{name:'先锋 · 战术预设 #2',exact:true}).waitFor();
+  assert.equal(await frame.getByText('共享战术预设',{exact:true}).count(),0);
+  await presetSearch.fill('先锋');assert.ok(await frame.locator('.list button strong[title="CH_FIGHTER_HIGHCLASS"]').count());
+  await page.locator('#module-tabs button').nth(1).click();
   for(const language of ['zh-CN','en-US','ja-JP']){
     await page.locator('#language').selectOption(language);await page.setViewportSize({width:390,height:844});
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);

@@ -1,6 +1,12 @@
 export const LANGUAGES=['zh-CN','en-US','ja-JP'];
 let language='zh-CN',catalog,lookup=new Map(),phraseIndex=new Map();
 export function getLanguage(){return language;}
+export function presetDisplayName(preset){
+  if(preset.id<0)return preset.symbol;
+  const classes=[...new Set((preset.references||[]).map(reference=>reference.class_symbol).filter(Boolean))];
+  const context=classes.length?classes.map(t).join(' / '):t((preset.lines||[]).find(line=>line.skill_name)?.skill_name||'');
+  return `${context?context+' · ':''}${t('战术预设')} #${preset.id}`;
+}
 export function localizedName(row,id=row?.[0]){return row?.[{'zh-CN':3,'en-US':1,'ja-JP':2}[language]]||t(row?.[2]||row?.[3]||row?.[1])||`ID ${id}`;}
 const sourceText=new WeakMap(),sourceAttributes=new WeakMap();
 export function translateDom(root){
