@@ -2277,13 +2277,13 @@ function App() {
                 onChange={(e) => setPresetFilter(e.target.value)}
               />
               <button type="button" onClick={() => createEmptyPreset(0)}>
-                新建空预设
+                新建预设
               </button>
               <button type="button" disabled={!selectedPreset} onClick={() => {
                 if (!selectedPreset) return;
                 const lines = edits.equipaiset_lines[String(selectedPreset.id)] ?? selectedPreset.lines;
                 createEmptyPreset(selectedPreset.id, lines, `${selectedPreset.symbol}_副本`);
-              }}>复制当前预设</button>
+              }}>复制预设</button>
             </div>
             {presetMissionId != null && (
               <p className="hint filter-hint">
