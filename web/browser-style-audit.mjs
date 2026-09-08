@@ -43,8 +43,8 @@ try{
     };
     for(let category=0;category<8;category++){
       await page.locator('#categories button').nth(category).click();const count=await page.locator('#module-tabs button').count();
-      for(let tab=0;tab<count;tab++){
-        await page.locator('#module-tabs button').nth(tab).click();
+      for(let tab=0;tab<Math.max(1,count);tab++){
+        if(count)await page.locator('#module-tabs button').nth(tab).click();
         if(await page.locator('#mission-host').isVisible()){
           const frame=page.frameLocator('iframe'),view=category===3?(tab===1?2:4):(tab===1?1:3);
           await frame.locator(`.view-tabs button:nth-child(${view}).active`).waitFor({state:'attached'});await frame.locator('.panel').first().waitFor();

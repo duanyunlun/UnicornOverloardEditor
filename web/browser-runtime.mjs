@@ -25,13 +25,15 @@ try{
   await page.setViewportSize({width:1440,height:900});
   await page.getByRole('button',{name:/^战斗/}).click();
   for(const name of ['动态等级','经验倍率']){
-    await page.getByRole('button',{name,exact:true}).click();
+    await page.getByRole('heading',{name,exact:true}).waitFor();
     assert.equal(await page.locator('#module-panel .warning').count(),0,'亚洲版不再显示验证状态横幅');
     await page.getByRole('button',{name:'选择原始 main',exact:true}).waitFor();
   }
-  await page.getByRole('button',{name:'经验倍率',exact:true}).click();
+  assert.equal(await page.locator('#module-tabs button').count(),0);
+  assert.equal(await page.locator('.battle-settings > .card').count(),6);
+  assert.equal(await page.getByRole('button',{name:'选择原始 main',exact:true}).count(),1);
   await page.getByLabel('经验倍率',{exact:true}).selectOption('2');
-  await page.getByLabel('启用此模块').check();
+  await page.locator('[data-module="experience_scale"]').getByLabel('启用此模块').check();
   await page.getByRole('button',{name:'导出 MOD 包',exact:true}).click();
   await page.getByRole('status').filter({hasText:'选择原始 main'}).waitFor();
   const chooserPromise=page.waitForEvent('filechooser');await page.getByRole('button',{name:'选择原始 main',exact:true}).click();

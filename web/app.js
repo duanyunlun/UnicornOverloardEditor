@@ -42,22 +42,29 @@ function checkbox(parent,label,value,callback){const wrapper=element('label',und
 function render(){renderContent();translateDom(document.body);}
 function renderContent(){
   $('categories').replaceChildren();for(const label of [...new Set(definitions.map(row=>row[0]))]){const node=button($('categories'),label,()=>{category=label;moduleKey=definitions.find(row=>row[0]===category)[1];render();});node.className=category===label?'active':'';element('span','›',node);}
-  $('module-tabs').replaceChildren();for(const row of definitions.filter(row=>row[0]===category)){const node=button($('module-tabs'),row[2],()=>{moduleKey=row[1];render();});node.className=moduleKey===row[1]?'active':'';}
+  $('module-tabs').hidden=category==='战斗';
+  $('module-tabs').replaceChildren();for(const row of definitions.filter(row=>row[0]===category&&category!=='战斗')){const node=button($('module-tabs'),row[2],()=>{moduleKey=row[1];render();});node.className=moduleKey===row[1]?'active':'';}
   $('module-panel').replaceChildren();$('mission-host').hidden=!missionKeys.has(moduleKey);
   if(missionKeys.has(moduleKey)){
     ensureFrame();if(frameReady)missionFrame.contentWindow.postMessage({type:'uo-view',view:moduleKey,target:project.target},location.origin);
     updateCount();return;
   }
-  const selected=state(),definition=definitions.find(row=>row[1]===moduleKey),card=element('section',undefined,$('module-panel'));card.className='card';const head=element('div',undefined,card);head.className='card-head';const title=element('div',undefined,head);element('h3',definition[2],title);element('p',definition[3],title);checkbox(head,'启用此模块',selected.enabled,value=>{selected.enabled=value;updateCount();});
-  if(['experience_scale','enemy_level_scale'].includes(moduleKey)){
-    if(project.target==='western')element('div','欧美版运行时补丁未经过本地游戏运行验证。',card).className='warning';
+  if(category==='战斗'){
+    const source=element('div',undefined,$('module-panel'));source.className='battle-source';
+    if(project.target==='western')element('div','欧美版运行时补丁未经过本地游戏运行验证。',source).className='warning';
     if(project.target==='asia'){
-      const controls=element('div',undefined,card);controls.className='actions';
+      const controls=element('div',undefined,source);controls.className='actions';
       button(controls,asiaSource?'更换原始 main':'选择原始 main',()=>{const input=document.createElement('input');input.type='file';input.onchange=async()=>{try{const file=input.files[0];if(!file)return;if(file.size>128*1024*1024)throw Error('游戏程序超过 128 MiB');const candidate=await validateAsiaSource(await file.arrayBuffer(),catalog.asiaRuntime);asiaSource=candidate;render();notify('原始 main 校验通过，仅保留在当前浏览器内存');}catch(error){notify(error.message,true);}};input.click();});
       element('span',asiaSource?'原始 main 已校验':'未选择原始 main（未压缩 NSO）',controls);
       if(asiaSource)button(controls,'清除原始 main',()=>{asiaSource=undefined;render();});
     }
-  }
+    const group=element('div',undefined,$('module-panel'));group.className='battle-settings';
+    for(const row of definitions.filter(row=>row[0]==='战斗'))renderModule(row[1],group);
+  }else renderModule(moduleKey,$('module-panel'));
+  updateCount();
+}
+function renderModule(moduleKey,parent){
+  const selected=state(moduleKey),definition=definitions.find(row=>row[1]===moduleKey),card=element('section',undefined,parent);card.className='card';card.dataset.module=moduleKey;const head=element('div',undefined,card);head.className='card-head';const title=element('div',undefined,head);element('h3',definition[2],title);element('p',definition[3],title);checkbox(head,'启用此模块',selected.enabled,value=>{selected.enabled=value;updateCount();});
   if(moduleKey.endsWith('_editor'))renderRecords(card,selected);
   else{
     const grid=element('div',undefined,card);grid.className='grid';
