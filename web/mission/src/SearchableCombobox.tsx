@@ -67,6 +67,7 @@ export function SearchableCombobox({
       <button
         type="button"
         className="combo-trigger"
+        title={selected?.secondary ? t(selected.secondary) : undefined}
         onClick={() => {
           setOpen((v) => !v);
           setQuery("");
@@ -75,9 +76,6 @@ export function SearchableCombobox({
         <span className="combo-label">
           {selected?.label || (value === 0 ? emptyLabel : `id ${value}`)}
         </span>
-        {selected?.secondary && t(selected.secondary).trim() !== t(selected.label).trim() ? (
-          <span className="combo-secondary">{selected.secondary}</span>
-        ) : null}
       </button>
       {open && (
         <div className="combo-pop">
@@ -102,6 +100,7 @@ export function SearchableCombobox({
                   <button
                     key={o.id}
                     type="button"
+                    title={o.secondary ? t(o.secondary) : undefined}
                     className={
                       o.id === value ? "combo-option active" : "combo-option"
                     }
@@ -111,9 +110,6 @@ export function SearchableCombobox({
                     }}
                   >
                     <span>{o.label}</span>
-                    {o.secondary && t(o.secondary).trim() !== t(o.label).trim() ? (
-                      <span className="combo-secondary">{o.secondary}</span>
-                    ) : null}
                   </button>
                 ))}
               </div>
