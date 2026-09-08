@@ -1,12 +1,25 @@
 # UnicornOverloardEditor
 
-《独角兽之王》存档与 MOD 浏览器编辑器，支持简体中文、English、日本語。
+《独角兽之王》存档与 MOD 编辑器的 **Web 整合与适配项目**，支持简体中文、English、日本語。
+
+本仓库基于已有开源项目及第三方 MOD 成果整合而来，并非从零原创的存档编辑器或 MOD 工具。上游代码、功能实现、数据整理和研究成果归原作者及贡献者；本仓库的工作主要是整合、Web 适配、界面与本地化调整，以及版本兼容和验证。
 
 **[打开 Web 编辑器](https://duanyunlun.github.io/UnicornOverloardEditor/)**
 
+## 上游来源与致谢
+
+| 来源 | 本项目使用的内容 |
+| --- | --- |
+| [turtle-insect/UnicornOverlord](https://github.com/turtle-insect/UnicornOverlord) | 原始存档编辑项目，是本项目存档编辑部分的上游基础。 |
+| [thu1478/UOSquadEditor](https://github.com/thu1478/UOSquadEditor)（[上游 Web 编辑器](https://thu1478.github.io/UOSquadEditor/editor)） | 关卡编队、战术预设、职业默认战术、默认装备等组件与实现，以及经验倍率和动态等级相关参考代码与数据。浏览器版直接复用了上游部分 React 组件，并做整合适配。 |
+
+感谢上述项目的原作者与贡献者。下方功能列表描述的是**整合版目前可用的能力**，不代表这些功能由本仓库原创。具体复用范围、固定上游版本及许可通知见[第三方 MOD 来源与许可](docs/第三方MOD来源.md)；上游许可与版权声明予以保留。
+
+## 项目状态
+
 从当前版本起，开发与发布全面转向 Web，不再发布 Windows/macOS 桌面 App。旧 Avalonia 源码仅保留作历史参考；公共名称、译文、原始表和补丁模板已移入 `web/`，Web 构建不需要 .NET。
 
-## 功能
+## 已整合功能
 
 - 存档：金币、声望、难度、角色职业/等级/经验/能力/亲密度、十支部队。
 - 角色：导出、替换，以及一次导入多个 `.uocd`；批量输入先整体验证，失败不部分写入。
@@ -36,10 +49,8 @@ python3 -m http.server 8766 --bind 127.0.0.1 --directory web/dist
 
 打开 `http://127.0.0.1:8766/`。不要通过 `file://` 双击网页。main 的 Web 相关更新自动部署 GitHub Pages；手动 Release 只生成 Web 静态 ZIP，不再构建桌面安装包。详见[构建与部署](docs/浏览器版构建与部署.md)。
 
-## 来源
+## 相关文档
 
-- [原始存档编辑项目](https://github.com/turtle-insect/UnicornOverlord)
-- [UOSquadEditor](https://github.com/thu1478/UOSquadEditor)
 - [第三方 MOD 来源与许可](docs/第三方MOD来源.md)
 - [MOD 功能对齐清单](docs/MOD功能对齐清单.md)
 - [开发与验证说明](docs/开发与验证.md)
@@ -50,7 +61,11 @@ python3 -m http.server 8766 --bind 127.0.0.1 --directory web/dist
 
 **[Open the Web editor](https://duanyunlun.github.io/UnicornOverloardEditor/)**
 
-Unicorn Overlord save and MOD editor for modern browsers, with Simplified Chinese, English and Japanese interfaces. Development and releases now target Web only; the old Avalonia application is retained as historical source, not a maintained release target.
+This repository integrates and adapts existing Unicorn Overlord save-editing and MOD tools for modern browsers, with Simplified Chinese, English and Japanese interfaces. It is not an original, built-from-scratch save editor or MOD toolkit.
+
+The save-editing foundation comes from [turtle-insect/UnicornOverlord](https://github.com/turtle-insect/UnicornOverlord). Mission, tactics and default-equipment components, along with related MOD code and data, come from or build on [thu1478/UOSquadEditor](https://github.com/thu1478/UOSquadEditor). Some upstream React components are directly reused and adapted. Credit for upstream code, research and data belongs to the original authors and contributors; this repository mainly provides integration, Web adaptation, interface and localization adjustments, compatibility work and validation. See [source and license notices](docs/第三方MOD来源.md) for details.
+
+The features listed here describe the integrated edition, not a claim of original authorship. Development and releases now target Web only; the old Avalonia application is retained as historical source, not a maintained release target.
 
 Save editing includes character import/export (including multiple `.uocd` files), inventory multi-selection, Rapport and units. The original eight MOD categories include mission squads, presets, class defaults, default gear, project import/export and conflict detection. Text/CPK editing remains deferred under the earlier scope and is not claimed as migrated.
 
