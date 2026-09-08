@@ -45,6 +45,16 @@ try{
       await page.locator('#categories button').nth(category).click();const count=await page.locator('#module-tabs button').count();
       for(let tab=0;tab<Math.max(1,count);tab++){
         if(count)await page.locator('#module-tabs button').nth(tab).click();
+        assert.equal(await page.locator('#module-panel .card[data-module] > details').count(),0,'所有模块不应显示补丁查看入口');
+        for(const head of await page.locator('#module-panel .card[data-module] > .card-head').all()){
+          const title=await head.locator('h3').boundingBox(),toggle=await head.locator('.toggle').boundingBox();
+          if(title&&toggle){
+            const offset=Math.abs(title.y+title.height/2-toggle.y-toggle.height/2);
+            if(width>=1024)assert.ok(offset<2,'模块标题和开关应垂直居中');
+            if(offset<2)assert.ok(Math.abs(toggle.x-title.x-title.width-20)<1,'模块开关应紧邻标题，间距20px');
+          }
+        }
+        for(const select of await page.locator('.battle-settings select').all())assert.ok((await select.boundingBox()).width<240,'普通战斗下拉框不应拉伸铺满');
         if(await page.locator('#mission-host').isVisible()){
           const frame=page.frameLocator('iframe'),view=category===3?(tab===1?2:4):(tab===1?1:3);
           await frame.locator(`.view-tabs button:nth-child(${view}).active`).waitFor({state:'attached'});await frame.locator('.panel').first().waitFor();

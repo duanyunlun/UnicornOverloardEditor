@@ -173,7 +173,7 @@ h3 { font-size: 15px; margin-top: 12px; }
 }
 
 .sort-row select {
-  flex: 1;
+  flex: 0 1 auto;
 }
 
 .list {
@@ -562,7 +562,7 @@ button.linkish {
 
 .meta-box select {
   display: block;
-  width: 100%;
+  width: auto;
   margin-top: 0.25rem;
   padding: 0.35rem 0.45rem;
 }

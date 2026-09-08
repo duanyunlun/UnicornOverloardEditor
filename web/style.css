@@ -50,24 +50,21 @@ nav button span { flex-shrink: 0; opacity: .6; }
 iframe { width: 100%; height: 100%; display: block; border: 0; background: var(--surface); }
 .card { padding: 8px 0; border: 0; margin: 0; }
 .card h3 { font-size: 15px; margin: 0 0 8px; }
-.card-head h3, .save-editor .card-head h2 { display: none; }
+.save-editor .card-head h2 { display: none; }
+.card-head h3 { margin: 0; }
 .card p { color: var(--muted); line-height: 1.6; margin: 0 0 10px; overflow-wrap: anywhere; }
-.card-head { display: flex; justify-content: flex-start; align-items: center; gap: 16px; margin-bottom: 8px; }
+.card-head { display: flex; justify-content: flex-start; align-items: center; gap: 20px; margin-bottom: 4px; }
 .card-head > div { min-width: 0; }
 .card-head p { margin: 0; }
 .battle-source { margin-bottom: 6px; }
-.battle-settings { max-width: 1050px; }
-.battle-settings > .card { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; padding: 8px 0; border-bottom: 1px solid var(--line); }
-.battle-settings .card-head { flex: 0 1 420px; margin: 0; }
-.battle-settings .card-head > .toggle { margin-left: auto; }
-.battle-settings .card-head h3 { display: block; margin-bottom: 4px; }
-.battle-settings .card-head p { font-size: 12px; }
-.battle-settings .grid { display: flex; flex-wrap: wrap; gap: 8px; max-width: 100%; }
-.battle-settings .field { width: 170px; max-width: 100%; }
-.battle-settings .grid:empty { display: none; }
-.battle-settings details { margin: 0; max-width: 100%; }
-.battle-settings details[open] { flex-basis: 100%; }
-.battle-settings summary { padding: 3px 0; font-size: 12px; }
+.battle-settings { width: fit-content; max-width: 100%; }
+.battle-settings > .card { padding: 6px 0; }
+.battle-settings .card > p { font-size: 12px; margin-bottom: 6px; }
+.card[data-module] > .grid:not(.record-picker) { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: end; }
+.card[data-module] > .grid:empty { display: none; }
+.card[data-module] > .grid > .field { max-width: 100%; }
+select { width: auto; max-width: 100%; justify-self: start; }
+.record-picker select, td select { width: 100%; }
 .card-head > .toggle { flex-shrink: 0; }
 .toggle { display: flex; align-items: center; gap: 8px; min-height: 36px; }
 .save-editor label.toggle { flex-direction: row-reverse; justify-content: flex-end; }

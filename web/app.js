@@ -64,7 +64,7 @@ function renderContent(){
   updateCount();
 }
 function renderModule(moduleKey,parent){
-  const selected=state(moduleKey),definition=definitions.find(row=>row[1]===moduleKey),card=element('section',undefined,parent);card.className='card';card.dataset.module=moduleKey;const head=element('div',undefined,card);head.className='card-head';const title=element('div',undefined,head);element('h3',definition[2],title);element('p',definition[3],title);checkbox(head,'启用此模块',selected.enabled,value=>{selected.enabled=value;updateCount();});
+  const selected=state(moduleKey),definition=definitions.find(row=>row[1]===moduleKey),card=element('section',undefined,parent);card.className='card';card.dataset.module=moduleKey;const head=element('div',undefined,card);head.className='card-head';element('h3',definition[2],head);checkbox(head,'启用此模块',selected.enabled,value=>{selected.enabled=value;updateCount();});element('p',definition[3],card);
   if(moduleKey.endsWith('_editor'))renderRecords(card,selected);
   else{
     const grid=element('div',undefined,card);grid.className='grid';
@@ -74,7 +74,6 @@ function renderModule(moduleKey,parent){
     if(moduleKey==='experience_scale')field(grid,'经验倍率',selected.multiplier,value=>selected.multiplier=value,[0.1,0.25,0.5,0.75,1,1.25,1.5,2,10].map(value=>[value,`${value} 倍`]));
     if(moduleKey==='type_matchups')for(const [key,label] of [['cavalryVsInfantry','骑兵 → 步兵'],['archerVsFlying','弓兵 → 飞行'],['flyingVsCavalry','飞龙 / 狮鹫 → 骑兵']])field(grid,label,selected[key],value=>selected[key]=value,[0.5,0.75,1,1.25,1.5,2,2.5,3,4,5,6,8,10].map(value=>[value,value+' 倍']));
   }
-  const details=element('details',undefined,card);element('summary',isAsiaRuntime(moduleKey,project.target)?'查看写入预览（非独立 pchtxt）':'查看此模块补丁',details);const preview=element('pre','展开后生成预览',details);details.ontoggle=()=>{if(details.open)try{preview.textContent=generateMod(moduleKey,selected,project.target,catalog);}catch(error){preview.textContent=error.message;}};updateCount();
 }
 function renderRecords(card,selected){
   const key=moduleKey,filename={ability_editor:'skill.txt',class_editor:'classmod.txt',fort_editor:'fortmod.txt',mine_editor:'minemod.txt',shop_editor:'shopmod.txt'}[key],all=rows(catalog.info[filename]);
